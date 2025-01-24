@@ -1,62 +1,61 @@
 import socket
-import threading
+from _thread import *
+import sys
 
-# Paramètres du serveur
-HOST = ''  # Adresse locale
-PORT = 65432        # Port d'écoute
+server = "127.0.0.1"
+port = 5555
 
-# Liste des connexions clients
-clients = {}
-client_id_counter = 1  # Compteur pour générer des identifiants uniques
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Diffuser les messages à tous les clients sauf à l'envoyeur
-def broadcast(message, client_socket):
-    for c in clients.values():
-        if c != client_socket:
-            c.sendall(message)
+try:
+    s.bind((server, port))
+except socket.error as e:
+    str(e)
 
-# Gérer chaque connexion client
-def handle_client(client_socket, client_id):
+s.listen(2)
+print("Waiting for a connection, Server Started")
+
+def read_pos(str):
+    str = str.split(",")
+    return int(str[0]), int(str[1])
+
+
+def make_pos(tup):
+    return str(tup[0]) + "," + str(tup[1])
+
+pos = [(0,0),(100,100)]
+
+def threaded_client(conn, player):
+    conn.send(str.encode(make_pos(pos[player])))
+    reply = ""
     while True:
         try:
-            data = client_socket.recv(1024)
+            data = read_pos(conn.recv(2048).decode())
+            pos[player] = data
+
             if not data:
+                print("Disconnected")
                 break
-            # Prendre la position reçue et la renvoyer aux autres clients avec l'ID du joueur
-            print(f"Reçu du client {client_id} : {data.decode()}")
-            broadcast(f"Joueur {client_id} : {data.decode()}".encode(), client_socket)
-        except ConnectionResetError:
+            else:
+                if player == 1:
+                    reply = pos[0]
+                else:
+                    reply = pos[1]
+
+                print("Received: ", data)
+                print("Sending : ", reply)
+
+            conn.sendall(str.encode(make_pos(reply)))
+        except:
             break
 
-    # Si le client se déconnecte, fermer la connexion
-    print(f"Client {client_id} déconnecté")
-    del clients[client_id]
-    client_socket.close()
+    print("Lost connection")
+    conn.close()
 
-# Démarrer le serveur
-def start_server():
-    global client_id_counter
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((HOST, PORT))
-    server_socket.listen()
+currentPlayer = 0
+while True:
+    conn, addr = s.accept()
+    print("Connected to:", addr)
 
-    print(f"Serveur en écoute sur {HOST}:{PORT}")
-
-    while True:
-        client_socket, client_address = server_socket.accept()
-        print(f"Connexion de {client_address}")
-        
-        # Assigner un identifiant unique au client
-        client_id = client_id_counter
-        clients[client_id] = client_socket
-        client_id_counter += 1
-
-        # Envoyer l'ID au client
-        client_socket.sendall(f"ID:{client_id}".encode())
-
-        # Créer un thread pour gérer chaque client séparément
-        client_thread = threading.Thread(target=handle_client, args=(client_socket, client_id))
-        client_thread.start()
-
-if __name__ == "__main__":
-    start_server()
+    start_new_thread(threaded_client, (conn, currentPlayer))
+    currentPlayer += 1
