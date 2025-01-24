@@ -17,7 +17,7 @@ import numpy as np
 import random
 import time
 
-
+# en mode caca
 # HomeScreen    [o]
 # GameScreen    [o]
 # Hexagon       [o]
