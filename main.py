@@ -1,6 +1,6 @@
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.graphics import Color, Line, Ellipse, Rectangle, Triangle
+from kivy.graphics import Color, Line, Rectangle, Triangle
 from kivy.uix.gridlayout import GridLayout
 from kivy.graphics import Color, Rectangle
 from kivy.uix.boxlayout import BoxLayout
@@ -17,7 +17,6 @@ import numpy as np
 import random
 import time
 
-# en mode caca
 # HomeScreen    [o]
 # GameScreen    [o]
 # Hexagon       [o]
