@@ -27,95 +27,94 @@ class HomeScreen(Screen):
         self.window.rows = 5
         self.window.cols = 1
 
-        self.player_box = GridLayout()
-        self.player_box.rows = 1
-        self.player_box.cols = 2
+        self.header = GridLayout()
+        self.header.rows = 1
+        self.header.cols = 3
 
-        self.player1 = GridLayout()
-        self.player1.rows = 2
-        self.player1.cols = 1
+        self.title_layout = GridLayout()
+        self.title_layout.rows = 1
+        self.title_layout.cols = 1
 
-        self.player2 = GridLayout()
-        self.player2.rows = 2
-        self.player2.cols = 1
+        self.players_name = GridLayout()
+        self.players_name.rows = 1
+        self.players_name.cols = 2
 
-        self.player2_type = GridLayout()
-        self.player2_type.rows = 1
-        self.player2_type.cols = 2
+        self.players_bot = GridLayout()
+        self.players_bot.rows = 1
+        self.players_bot.cols = 4
 
-        self.player1_type = GridLayout()
-        self.player1_type.rows = 1
-        self.player1_type.cols = 2
+        self.hex_grid_size = GridLayout()
+        self.hex_grid_size.rows = 1
+        self.hex_grid_size.cols = 3
 
-        self.play_box = GridLayout()
-        self.play_box.rows = 1
-        self.play_box.cols = 1
-
-        self.exit_box = GridLayout()
-        self.exit_box.rows = 1
-        self.exit_box.cols = 1
+        self.footer = GridLayout()
+        self.footer.rows = 1
+        self.footer.cols = 2
 
         with self.window.canvas.before:
-            Color(0.5, 0.5, 0.5, 1)
+            Color(240/255, 219/255, 175/255)
             self.rect = Rectangle(pos=self.window.pos, size=(self.window.size[0] + 20, self.window.size[1]))
         self.window.bind(pos=self.update_rect, size=self.update_rect)
-
-        self.window.size_hint = (0.8, 0.8)
         self.window.pos_hint = {"center_x": 0.5, "center_y":0.5}
 
-        self.window.spacing = 10
-        self.player_box.spacing = 10
+        with self.title_layout.canvas.before:
+            Color(28/255, 65/255, 91/255)
+            self.rect = Rectangle(pos=self.title_layout.pos, size=self.title_layout.size)
+        self.title_layout.bind(pos=self.update_rect, size=self.update_rect)
+        self.window.pos_hint = {"center_x": 0.5, "center_y":0.5}
 
-        self.titre = Label(text="Hex Game", font_size = 90)
+        
+        
 
-        self.player1_entry = TextInput(text='enwatibateau',
-                                       hint_text="Name player 1",
-                                       multiline = False,
-                                       size_hint=(0.75, 1.5))
+        self.window.padding = 0
+        
+        
+        
+        self.exit_button = Button(text="X", background_color= (28/255, 65/255, 91/255), padding = 15)
+        self.exit_button.bind(on_press=self.close_window)
+        self.titre = Label(text="Hex Game", font_size = 65)
+        
+
+        self.player1_entry = TextInput(text='enwatibateau', hint_text="Name player 1", multiline = False,size_hint=(0.2, 0.2))
         
         self.player1_type_check = CheckBox()
         self.player1_type_label = Label(text="bot ?")
 
-        self.player2_entry = TextInput(text='shamiiow',
-                                       hint_text="Name player 2",
-                                       multiline = False,
-                                       size_hint=(0.75, 1.5))
+        self.player2_entry = TextInput(text='shamiiow', hint_text="Name player 2", multiline = False, size_hint=(0.75, 1.5))
         
         self.player2_type_check = CheckBox()
         self.player2_type_label = Label(text="bot ?")
         
 
-        self.len_grid = TextInput(text="7",
-                                  hint_text = "len grid",)
+        self.len_grid = TextInput(text="7", hint_text = "len grid",)
 
-        self.play_button = Button(text= "Play", font_size=40)
-        self.exit_button = Button(text="Exit")
-
+        self.play_button = Button(text= "Play", font_size=40)  
         self.play_button.bind(on_press=self.go_to_game)
-        self.exit_button.bind(on_press=self.close_window)
 
-        self.player1_type.add_widget(self.player1_type_check)
-        self.player1_type.add_widget(self.player1_type_label)   
 
-        self.player2_type.add_widget(self.player2_type_check)
-        self.player2_type.add_widget(self.player2_type_label)
 
-        self.play_box.add_widget(self.play_button)
-        self.exit_box.add_widget(self.exit_button)
+        
+        self.title_layout.add_widget(self.titre)
 
-        self.player1.add_widget(self.player1_entry)
-        self.player1.add_widget(self.player1_type)
-        self.player2.add_widget(self.player2_entry)
-        self.player2.add_widget(self.player2_type)
+        self.header.add_widget(self.exit_button)
+        self.header.add_widget(self.title_layout)
+        self.header.add_widget(Label(text=" "))
 
-        self.player_box.add_widget(self.player1)
-        self.player_box.add_widget(self.player2)
+        self.players_name.add_widget(self.player1_entry)
+        self.players_name.add_widget(self.player2_entry)   
 
-        self.window.add_widget(self.titre)
-        self.window.add_widget(self.player_box)
-        self.window.add_widget(self.len_grid)
-        self.window.add_widget(self.play_box)
-        self.window.add_widget(self.exit_box)
+        self.players_bot.add_widget(self.player1_type_check)
+        self.players_bot.add_widget(self.player2_type_check)
+
+        self.hex_grid_size.add_widget(Label(text="Faudra mettre les boutons ici bg"))
+
+        self.footer.add_widget(self.play_button)
+
+        self.window.add_widget(self.header)
+        self.window.add_widget(self.players_name)
+        self.window.add_widget(self.players_bot)
+        self.window.add_widget(self.hex_grid_size)
+        self.window.add_widget(self.footer)
 
         self.add_widget(self.window)
 
@@ -176,8 +175,8 @@ class GameScreen(Screen):
         self.player2_label = Label(text='Name player2', color = (176/255,97/255,97/255), font_size=30, bold = True)                                # Index 2
         self.player1_last_play_label = Label(text='List of last play for player 1', color = (176/255,97/255,97/255), font_size=50)    # Index 3
         self.player2_last_play_label = Label(text='List of last play for player 2', color = (176/255,97/255,97/255), font_size=50)    # Index 4
-        self.cancel_button = Button(text='Cancel last play', color = (0.9, 0.9, 0.9), font_size=40, background_color=(0/255, 46/255, 96/255), bold = True)                           # Index 5
-        self.home_button = Button(text='Back home', color = (0.9, 0.9, 0.9), font_size=40, background_color=(0/255, 46/255, 96/255), bold = True)                                    # Index 6
+        self.cancel_button = Button(text='Cancel last play', color = (0.9, 0.9, 0.9), font_size=40, background_color=(28/255, 65/255, 91/255), bold = True)                           # Index 5
+        self.home_button = Button(text='Back home', color = (0.9, 0.9, 0.9), font_size=40, background_color=(28/255, 65/255, 91/255), bold = True)                                    # Index 6
 
         # Association des commande
 
