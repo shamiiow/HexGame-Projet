@@ -17,12 +17,6 @@ import numpy as np
 import random
 import time
 
-# HomeScreen    [o]
-# GameScreen    [o]
-# Hexagon       [o]
-# HexGrid       [o]
-# MyApp         [o]
-
 class HomeScreen(Screen):
     def __init__(self, **kwargs):
         super(HomeScreen, self).__init__(**kwargs)
@@ -162,6 +156,7 @@ class GameScreen(Screen):
         self.type_robot = self.list_robot[0]
         self.couleur = ["white","blue", "red"]
         self.text_color = (176/255,97/255,97/255)
+        print(Window.size[0])
 
         # Creation du Grid
 
@@ -170,7 +165,7 @@ class GameScreen(Screen):
 
         # Creation des SousGrid
 
-        self.header = GridLayout(rows=1, cols=3, size_hint_y=None, height=75)
+        self.header = GridLayout(rows=1, cols=3, size_hint_y=None, height=75, padding = [0,20,0,0])
         self.game_hex = Widget(size_hint_y=2)
         self.footer = GridLayout(rows=2, cols=2, size_hint_y=None, height=50*(Window.size[0]/Window.size[1]))
 
@@ -181,8 +176,8 @@ class GameScreen(Screen):
         self.player2_label = Label(text='Name player2', color = (176/255,97/255,97/255), font_size=30, bold = True)                                # Index 2
         self.player1_last_play_label = Label(text='List of last play for player 1', color = (176/255,97/255,97/255), font_size=50)    # Index 3
         self.player2_last_play_label = Label(text='List of last play for player 2', color = (176/255,97/255,97/255), font_size=50)    # Index 4
-        self.cancel_button = Button(text='Cancel last play', color = (0.9, 0.9, 0.9), font_size=40, background_color=(240/255, 219/255, 175/255), bold = True)                           # Index 5
-        self.home_button = Button(text='Back home', color = (0.9, 0.9, 0.9), font_size=40, background_color=(240/255, 219/255, 175/255), bold = True)                                    # Index 6
+        self.cancel_button = Button(text='Cancel last play', color = (0.9, 0.9, 0.9), font_size=40, background_color=(0/255, 46/255, 96/255), bold = True)                           # Index 5
+        self.home_button = Button(text='Back home', color = (0.9, 0.9, 0.9), font_size=40, background_color=(0/255, 46/255, 96/255), bold = True)                                    # Index 6
 
         # Association des commande
 
@@ -317,6 +312,15 @@ class GameScreen(Screen):
 
         facteur = 2.5
 
+        #resize les elements en fonction de la taill de la fenetre
+
+        self.widgets[0].font_size = 30*min(Window.size[0]/800,Window.size[1]/800)
+        self.widgets[1].font_size = 20*min(Window.size[0]/800,Window.size[1]/800)
+        self.widgets[2].font_size = 30*min(Window.size[0]/800,Window.size[1]/800)
+
+        self.cancel_button.font_size = 40*min(Window.size[0]/800,Window.size[1]/800)
+        self.home_button.font_size = 40*min(Window.size[0]/800,Window.size[1]/800)
+
         self.hex_size = min((Window.size[0])/(facteur*(self.coll+self.coll//2)),((Window.size[1])/(facteur*self.coll)))
 
         self.hex_width = cos(pi/6) * 2 * self.hex_size
@@ -332,7 +336,8 @@ class GameScreen(Screen):
         with self.game_hex.canvas.before:
             self.hex_grid = HexGrid(rows=self.coll, cols=self.coll, hex_size=self.hex_size, pos_x=self.center_x_grid, pos_y= self.center_y_grid, grid_p=self.grid_p, coll=self.coll) 
 
-        self.footer.height=min((Window.size[1])/16, 1000000)
+        self.header.height = min((Window.size[1])/12, 100000)
+        self.footer.height= min((Window.size[1])/12, 100000)
         #self.affiche() 
 
     def affiche(self):
@@ -364,6 +369,7 @@ class GameScreen(Screen):
         self.grid_w = [[0 for _ in range(self.longeur)] for _ in range(self.longeur)]
         poss_hex = [[0 for _ in range(self.longeur-2)] for _ in range(self.longeur-2)]
         
+        # definir le centre de la grille d'hexagone 
         if self.longeur%2 != 0:
             self.center_x_grid = Window.size[0]*0.5 - (self.coll + self.coll//2 - 1)/2*self.hex_width
             self.center_y_grid = Window.size[1]*0.5 + (self.hex_height - cos(pi/3) * self.hex_size)*(self.coll//2) 
@@ -438,7 +444,7 @@ class Hexagon(Widget):
             
             # Dessiner les contours du triangle
             
-            Line(points=points + points[:2], width = (35)/(self.coll))
+            Line(points=points + points[:2], width = (20)/(self.coll))
 
             
 
