@@ -44,7 +44,6 @@ class Player():
 
 
 def read_pos(str):
-    print(str)
     str = str.split(",")
     return int(str[0]), int(str[1])
 
@@ -53,7 +52,7 @@ def make_pos(tup):
     return str(tup[0]) + "," + str(tup[1])
 
 
-def redrawWindow(win,player, player2):
+def redrawWindow(win, player, player2):
     win.fill((255,255,255))
     player.draw(win)
     player2.draw(win)
@@ -64,16 +63,24 @@ def main():
     run = True
     n = Network()
     startPos = read_pos(n.getPos())
-    p = Player(startPos[0],startPos[1],100,100,(0,255,0))
-    p2 = Player(0,0,100,100,(255,0,0))
+    p = Player(startPos[0], startPos[1], 100, 100, (0, 255, 0))
+    p2 = Player(0, 0, 100, 100, (255, 0, 0))
     clock = pygame.time.Clock()
+
+    prev_pos = (p.x, p.y)
 
     while run:
         clock.tick(60)
-        p2Pos = read_pos(n.send(make_pos((p.x, p.y))))
-        p2.x = p2Pos[0]
-        p2.y = p2Pos[1]
-        p2.update()
+        current_pos = (p.x, p.y)
+        
+        if current_pos != prev_pos:
+            p2Pos = read_pos(n.send(make_pos(current_pos)))
+            p2.x = p2Pos[0]
+            p2.y = p2Pos[1]
+            p2.update()
+            prev_pos = current_pos
+
+        
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -81,6 +88,16 @@ def main():
                 pygame.quit()
 
         p.move()
+        current_pos = (p.x, p.y)
+        if current_pos != prev_pos:
+            p2Pos = read_pos(n.send(make_pos(current_pos)))
+            p2.x = p2Pos[0]
+            p2.y = p2Pos[1]
+            p2.update()
+            prev_pos = current_pos
+            print(f"Player 1 position: {p.x, p.y}")
+            print(f"Player 2 position: {p2.x, p2.y}")
+
         redrawWindow(win, p, p2)
 
 main()
