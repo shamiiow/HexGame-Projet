@@ -6,11 +6,9 @@ from kivy.graphics import Color, Rectangle, RoundedRectangle
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.checkbox import CheckBox
-from math import cos, sin, pi, sqrt
 from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-from random import choice
 
 
 
