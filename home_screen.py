@@ -150,4 +150,4 @@ class ColoredLabel(Label):
 
     def update_rect(self, *args):
         self.rect.size = (self.size[0] * 1, self.size[1] * 1)
-        self.rect.pos = (self.x - (self.rect.size[0] - self.size[0]) / 2, self.y - (self.rect.size[1] - self.size[1]) / 2)
+        self.rect.pos = (self.x - (self.rect.size[0] - self.size[0]) / 2, self.y - (self.rect.size[1] - self.size[1]) / 2)  
