@@ -1,5 +1,5 @@
-from random import choice
 from copy import deepcopy
+from random import choice
 import numpy as np
 import random
 
