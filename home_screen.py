@@ -2,7 +2,8 @@ from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from kivy.graphics import Color, Rectangle
 from kivy.uix.gridlayout import GridLayout
-from kivy.graphics import Color, Rectangle
+from kivy.graphics import Color, Rectangle, RoundedRectangle
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.checkbox import CheckBox
 from math import cos, sin, pi, sqrt
@@ -10,6 +11,7 @@ from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from random import choice
+
 
 
 class HomeScreen(Screen):
@@ -22,7 +24,7 @@ class HomeScreen(Screen):
         self.window.rows = 5
         self.window.cols = 1
 
-        self.header = GridLayout()
+        self.header = GridLayout(padding = 10)
         self.header.rows = 1
         self.header.cols = 3
 
@@ -30,7 +32,7 @@ class HomeScreen(Screen):
         self.title_layout.rows = 1
         self.title_layout.cols = 1
 
-        self.players_name = GridLayout()
+        self.players_name = GridLayout(padding = 10, size_hint_y=None, height = 0.08*Window.size[1], spacing = 0.08*Window.size[1])
         self.players_name.rows = 1
         self.players_name.cols = 2
 
@@ -46,36 +48,37 @@ class HomeScreen(Screen):
         self.footer.rows = 1
         self.footer.cols = 2
 
+        self.float_layout = FloatLayout(size_hint=(1, 1))
+
+
+
+
         with self.window.canvas.before:
             Color(240/255, 219/255, 175/255)
             self.rect = Rectangle(pos=self.window.pos, size=(self.window.size[0] + 20, self.window.size[1]))
         self.window.bind(pos=self.update_rect, size=self.update_rect)
         self.window.pos_hint = {"center_x": 0.5, "center_y":0.5}
 
-        with self.title_layout.canvas.before:
-            Color(28/255, 65/255, 91/255)
-            self.rect = Rectangle(pos=self.title_layout.pos, size=self.title_layout.size)
-        self.title_layout.bind(pos=self.update_rect, size=self.update_rect)
-        self.window.pos_hint = {"center_x": 0.5, "center_y":0.5}
-
         
+        
+        #, size_hint_x = None, width = 10
         
 
-        self.window.padding = 0
         
-        
-        
-        self.exit_button = Button(text="X", background_color= (28/255, 65/255, 91/255), padding = 15)
+        #self.exit_button = Button(text="X", background_color= (0/255, 45/255, 90/255), size_hint = (None,None), width = Window.size[0]/25, height =  Window.size[1]/25, pos_hint={'x': 0, 'y': 1-(self.height/Window.size[1])})
+        self.exit_button = Button(text="X", background_color= (0/255, 45/255, 90/255), pos_hint={'x': 0, 'y': 0}, size_hint = (1,1))
         self.exit_button.bind(on_press=self.close_window)
-        self.titre = Label(text="Hex Game", font_size = 65)
         
 
-        self.player1_entry = TextInput(text='enwatibateau', hint_text="Name player 1", multiline = False,size_hint=(0.2, 0.2))
+        self.title = ColoredLabel(text='Hex Game')
+        
+
+        self.player1_entry = TextInput(text='', hint_text="Name player 1", multiline = False, size_hint_x = None, width = 50)
+        
+        self.player2_entry = TextInput(text='', hint_text="Name player 2", multiline = False, size_hint_x = None, width = 50, background_color = (0,125,100))
         
         self.player1_type_check = CheckBox()
         self.player1_type_label = Label(text="bot ?")
-
-        self.player2_entry = TextInput(text='shamiiow', hint_text="Name player 2", multiline = False, size_hint=(0.75, 1.5))
         
         self.player2_type_check = CheckBox()
         self.player2_type_label = Label(text="bot ?")
@@ -83,17 +86,17 @@ class HomeScreen(Screen):
 
         self.len_grid = TextInput(text="7", hint_text = "len grid",)
 
-        self.play_button = Button(text= "Play", font_size=40)  
+        self.play_button = Button(text= "Play", font_size=40,background_color= (0/255, 45/255, 90/255))  
         self.play_button.bind(on_press=self.go_to_game)
 
 
 
         
-        self.title_layout.add_widget(self.titre)
+        self.float_layout.add_widget(self.exit_button)
 
-        self.header.add_widget(self.exit_button)
-        self.header.add_widget(self.title_layout)
-        self.header.add_widget(Label(text=" "))
+        self.header.add_widget(self.float_layout)
+        self.header.add_widget(self.title)
+        self.header.add_widget(Button(text="XXXX", background_color= (0/255, 0/255, 125/255)))
 
         self.players_name.add_widget(self.player1_entry)
         self.players_name.add_widget(self.player2_entry)   
@@ -112,6 +115,11 @@ class HomeScreen(Screen):
         self.window.add_widget(self.footer)
 
         self.add_widget(self.window)
+
+
+
+
+        
 
     def update_rect(self, instance, value):
         value = 20
@@ -133,4 +141,15 @@ class HomeScreen(Screen):
 
     def p2_checkbox(self):
         return self.player2_type_check.active
-            
+    
+class ColoredLabel(Label):
+    def __init__(self, **kwargs):
+        super(ColoredLabel, self).__init__(**kwargs)
+        with self.canvas.before:
+            Color(0/255, 20/255, 40/255)
+            self.rect = RoundedRectangle(size=self.size, pos=self.pos, radius = [(self.size[0]/2,self.size[1]/2)]*4)
+            self.bind(size=self.update_rect, pos=self.update_rect)
+
+    def update_rect(self, *args):
+        self.rect.size = (self.size[0] * 1, self.size[1] * 1)
+        self.rect.pos = (self.x - (self.rect.size[0] - self.size[0]) / 2, self.y - (self.rect.size[1] - self.size[1]) / 2)
