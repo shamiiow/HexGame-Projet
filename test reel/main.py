@@ -222,7 +222,11 @@ class GameScreen(Screen):
             return super(GameScreen, self).on_touch_down(touch)
         
         c = [poss_mouse[0]+1, poss_mouse[1]+1]
-        print(self.network.send(str(c)))
+        
+        send_data = str(c[0])+','+str(c[1])+','+str(self.id)+','+str(self.player)
+        print(send_data)
+        print(self.network.send(send_data))
+
 
         if self.winner != 0 or self.grid_p[c[0]][c[1]] != 0:
             self.update()
@@ -241,6 +245,7 @@ class GameScreen(Screen):
         else: self.turn_label.text= "Au tour de : "+ str(self.player1_name)
 
         self.update()
+        
 
     def play(self, c):
         if self.winner != 0 or self.grid_p[c[0]][c[1]] != 0:
@@ -357,7 +362,9 @@ class GameScreen(Screen):
         global poss_hex
         
         self.network = Network()
-        print(self.network.send("Connected"))
+        self.id = self.network.send("Connected")
+
+        print(self.id)
         
         self.turn_on = True
         self.longUeur = max(2, longUeur)
