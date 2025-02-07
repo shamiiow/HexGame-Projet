@@ -265,9 +265,6 @@ class GameScreen(Screen):
 
         self.update()
 
-
-        
-
     def go_to_home(self, instance):
         self.game_hex.canvas.before.clear()
 
@@ -308,19 +305,15 @@ class Hexagon(Widget):
                 Color(220/255,134/255,134/255)
                 #Color(0.5,0,0)
 
-
             Triangle(points=points[4:10])
             Triangle(points=points[-2:]+points[:5])
             Rectangle(pos=points[4:6], size=(self.hex_width, self.hex_size))
-
 
             Color(.2,.2,.2)
             
             # Dessiner les contours du triangle
             
             Line(points=points + points[:2], width = (20)/(self.coll))
-
-            
 
 class HexGrid(Widget):
     def __init__(self, rows, cols, hex_size, pos_x=0, pos_y=0, grid_p=0, coll=0, **kwargs):
@@ -337,7 +330,6 @@ class HexGrid(Widget):
 
         self.draw_grid()
         
-
     def draw_grid(self):
         for row in range(self.rows):
             for col in range(self.cols):
@@ -359,7 +351,6 @@ class HexGrid(Widget):
         Color(126/255,215/255,193/255)
         Triangle(points=top_left+top_right+middle)
         Triangle(points=bot_left+bot_right+middle)
-        
 
         for row in range(self.rows):
             for col in range(self.cols):
