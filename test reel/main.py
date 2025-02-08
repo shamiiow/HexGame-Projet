@@ -18,7 +18,7 @@ import random
 import time
 from _thread import *
 
-
+from kivy.clock import Clock
 from network import Network
 
 class HomeScreen(Screen):
@@ -223,7 +223,7 @@ class GameScreen(Screen):
         
         c = [poss_mouse[0]+1, poss_mouse[1]+1]
         
-        send_data = str(c[0])+','+str(c[1])+','+str(self.id)+','+str(self.player)
+        send_data = str(c[0])+','+str(c[1])+','+str(self.id)
         print(send_data)
         print(self.network.send(send_data))
 
@@ -358,11 +358,15 @@ class GameScreen(Screen):
             print("  "*i+str(self.grid_p[i])+"   "*(self.longeur//2)+str(self.grid_w[i])+"   "*(self.longeur//2)+str(poss_hex[i-1]))
         print(self.winner)
 
+    def update_game_state(self, dt):
+            print("Mise à jour de l'état du jeu")
+
     def set_variables(self, player1_name, player2_name, p1_checkbox, p2_checkbox, longUeur):
         global poss_hex
         
         self.network = Network()
         self.id = self.network.send("Connected")
+        Clock.schedule_interval(self.update_game_state, 5)
 
         print(self.id)
         
