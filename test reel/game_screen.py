@@ -97,9 +97,7 @@ class GameScreen(Screen):
         
         c = [poss_mouse[0]+1, poss_mouse[1]+1]
         
-        
-        if self.base == None:
-            Clock.schedule_interval(self.update_game_state, 1)
+            
         self.base = c
 
 
@@ -127,7 +125,7 @@ class GameScreen(Screen):
         if self.winner != 0 or self.grid_p[c[0]][c[1]] != 0:
             return
         self.grid_w = [[0 for _ in range(self.longeur)] for _ in range(self.longeur)]
-        self.grid_p[c[0]][c[1]] = 1 + int(self.player)
+        #self.grid_p[c[0]][c[1]] = 1 + int(self.player)
         self.recap.append(c)
         self.win()
         self.player = self.player ^ True
@@ -243,18 +241,31 @@ class GameScreen(Screen):
             print("Data recu :")
             for i in self.data_recieve:
                 print(i)
+            if type(self.data_recieve) == list:
+                for i in range(1, self.longeur-1):
+                    for j in range(1, self.longeur-1):
+                        self.grid_p[i][j] = self.data_recieve[i-1][j-1]
+            
+            self.update()
             
             print("------------------------Fin de l'update-------------------------")
     
     def format(self, texte):
+        print(texte)
+        print(type(texte))
         if '@' not in texte:
             return texte
         texte = texte.split('@')
-        texte = texte[-1]
+        for i in range(1, len(texte)):
+            print(texte[i])
+            print('---------------------------------------------------------------------')
+            if texte[i][-1] == '%':
+                clean = texte[i][:-1]
+        texte = clean
         texte = texte.split('\n')
         for i in range(len(texte)):
             texte[i] = texte[i].replace('[','').replace(']','').replace(',','').replace(' ','')
-        new_grid = [[int(texte[i][j]) for j in range(len(texte))] for i in range(len(texte))]
+        new_grid = [[int(texte[i][j]) for j in range(len(texte[i]))] for i in range(len(texte))]
         return new_grid
      
 
@@ -267,7 +278,8 @@ class GameScreen(Screen):
 
         print(self.id)
         
-        self.base = None
+        self.base = [-1,-1, self.id]
+        Clock.schedule_interval(self.update_game_state, 1.0/60.0)
         self.turn_on = True
         self.longUeur = max(2, longUeur)
         self.player1_name = player1_name

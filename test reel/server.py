@@ -53,8 +53,14 @@ def threaded_client(conn, player):
             id = None
 
             data = nice_data(data)
-            
-            if data != '-1' and currentPlayer == 2 and type(data) == list:
+            print("----------Data----------")
+            print(data[0])
+            if data[0] == -1:
+                reply = str(grid_global).replace("],", "],\n").replace("[[", " [").replace("]]", "]")
+                reply = '@'+reply+'%'
+            print("----------Fin de la data----------")
+
+            if data != '-1' and currentPlayer == 2 and type(data) == list and data[0] != -1:
                 id = data[2]
                 print("----------Gestion de la partie----------")
                 #print(id, player_1, player_2, player_turn, data)
@@ -73,19 +79,19 @@ def threaded_client(conn, player):
                 display(grid_global)
                 print("----------Fin de la gestion de la partie----------")
                 reply = str(grid_global).replace("],", "],\n").replace("[[", " [").replace("]]", "]")
-                reply = '@'+reply
+                reply = '@'+reply+'%'
+
+            
 
             if data == '-1':
+                print("----------Gestion de la connexion----------")
                 if not(player_1) :
                     reply = '69'
                     player_1 = 69
                 elif not(player_2):
                     reply = '420'
                     player_2 = 420
-
-
-
-            
+                print("----------Fin de la gestion de la connexion----------")
 
             print("Message envoye :\n" + str(reply))
             print("----------Fin du message envoye----------") 
@@ -106,7 +112,7 @@ def threaded_client(conn, player):
 
 currentPlayer = 0
 clients = []
-grid_global = [[0 for _ in range(9)] for _ in range(9)]
+grid_global = [[0 for _ in range(7)] for _ in range(7)]
 player_1 = False
 player_2 = False
 
