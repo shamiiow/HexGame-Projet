@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import ScreenManager
 
 from menu_screen import MenuScreen
 from home_screen import HomeScreen
+from waiting_screen import WaitingScreen
 from game_screen import GameScreen
 
 
@@ -10,8 +11,10 @@ class MyApp(App):
     def build(self):
         self.title = 'Hex Game'
         sm = ScreenManager()
+        
         sm.add_widget(MenuScreen(name='menu'))
         sm.add_widget(HomeScreen(name='home'))
+        sm.add_widget(WaitingScreen(name='waiting'))
         sm.add_widget(GameScreen(name='game'))
         return sm
 

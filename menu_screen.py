@@ -44,10 +44,10 @@ class MenuScreen(Screen):
             self.rect = Rectangle(size=self.root.size, pos=self.root.pos)
         self.root.bind(size=self.update_rect, pos=self.update_rect)
         # Layout principal pour le contenu
-        self.content_layout = BoxLayout(orientation='vertical', padding=30, spacing=10)
+        self.content_layout = BoxLayout(orientation='vertical', padding=[30,70,30,30], spacing=10)
         
         # Nom du jeu
-        self.game_title = Label(text='Hexgame', font_size=100, color = (176/255,97/255,97/255), size_hint=(1, 0.2))
+        self.game_title = Label(text='Hexgame', font_size=130, color = (176/255,97/255,97/255), size_hint=(1, 0.2))
         self.content_layout.add_widget(self.game_title)
         
         # Espacement entre le titre et les boutons
@@ -58,10 +58,10 @@ class MenuScreen(Screen):
         self.button_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.6), padding=[100, 0, 100, 0], spacing=20)
 
         self.local_button = RoundedButton(text='Local', font_size = 60, size_hint=(1, 1))
-        self.local_button.bind(on_release=lambda x: os.system('python local.py'))
+        self.local_button.bind(on_press=self.go_to_local)
         
         self.online_button = RoundedButton(text='En ligne', font_size = 60, size_hint=(1, 1))
-        self.online_button.bind(on_release=lambda x: os.system('python en_ligne.py'))
+        self.online_button.bind(on_press=self.go_to_online)
 
         self.button_layout.add_widget(self.local_button)
         self.button_layout.add_widget(self.online_button)
@@ -79,4 +79,10 @@ class MenuScreen(Screen):
     def update_rect(self,instance, value):
         self.rect.pos = self.pos
         self.rect.size = self.size
+
+    def go_to_online(self, instance):
+        self.manager.current = 'waiting'
+
+    def go_to_local(self, instance):
+        self.manager.current = 'home'
 
