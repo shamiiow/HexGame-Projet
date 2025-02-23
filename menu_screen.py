@@ -44,10 +44,10 @@ class MenuScreen(Screen):
             self.rect = Rectangle(size=self.root.size, pos=self.root.pos)
         self.root.bind(size=self.update_rect, pos=self.update_rect)
         # Layout principal pour le contenu
-        self.content_layout = BoxLayout(orientation='vertical', padding=30, spacing=10)
+        self.content_layout = BoxLayout(orientation='vertical', padding=[30,70,30,30], spacing=10)
         
         # Nom du jeu
-        self.game_title = Label(text='Hexgame', font_size=100, color = (176/255,97/255,97/255), size_hint=(1, 0.2))
+        self.game_title = Label(text='Hexgame', font_size=130, color = (176/255,97/255,97/255), size_hint=(1, 0.2))
         self.content_layout.add_widget(self.game_title)
         
         # Espacement entre le titre et les boutons
