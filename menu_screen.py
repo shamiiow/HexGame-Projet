@@ -51,7 +51,7 @@ class MenuScreen(Screen):
         self.content_layout.add_widget(self.game_title)
         
         # Espacement entre le titre et les boutons
-        self.spacer = Widget(size_hint=(1, 0.2))
+        self.spacer = Widget(size_hint=(1, 0.1))
         self.content_layout.add_widget(self.spacer)
         
         # Boutons
