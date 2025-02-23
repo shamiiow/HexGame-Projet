@@ -2,7 +2,8 @@ from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager
 
 from menu_screen import MenuScreen
-from home_screen import HomeScreen
+from local_menu_screen import LocalMenuScreen
+from server_screen import ServerScreen
 from waiting_screen import WaitingScreen
 from game_screen import GameScreen
 
@@ -13,7 +14,8 @@ class MyApp(App):
         sm = ScreenManager()
         
         sm.add_widget(MenuScreen(name='menu'))
-        sm.add_widget(HomeScreen(name='home'))
+        sm.add_widget(LocalMenuScreen(name='local_menu'))
+        sm.add_widget(ServerScreen(name='server'))
         sm.add_widget(WaitingScreen(name='waiting'))
         sm.add_widget(GameScreen(name='game'))
         return sm

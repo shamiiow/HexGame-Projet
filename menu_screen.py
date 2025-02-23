@@ -28,7 +28,7 @@ class RoundedButton(Button):
 
     def update_bg_rect(self, *args):
         self.bg_rect.pos = [self.pos[0]-13, self.pos[1]-6]
-        self.bg_rect.size = [self.size[0]+26, self.size[1]+11]
+        self.bg_rect.size = [self.size[0]+26, self.size[1]+12]
 
 class MenuScreen(Screen):
     def __init__(self, **kwargs):
@@ -40,14 +40,14 @@ class MenuScreen(Screen):
 
         # Ajout de l'arrière-plan
         with self.root.canvas.before:
-            Color(240 / 255, 219 / 255, 175 / 255, 1)  # Couleur de fond
-            self.rect = Rectangle(size=self.root.size, pos=self.root.pos)
-        self.root.bind(size=self.update_rect, pos=self.update_rect)
+            self.rects = []
+            self.update_gradient()
+        self.root.bind(size=self.update_rects, pos=self.update_rects)
         # Layout principal pour le contenu
         self.content_layout = BoxLayout(orientation='vertical', padding=[30,70,30,30], spacing=10)
         
         # Nom du jeu
-        self.game_title = Label(text='Hexgame', font_size=130, color = (176/255,97/255,97/255), size_hint=(1, 0.2))
+        self.game_title = Label(text='Hexgame', font_size=130, color = (0/255, 20/255, 40/255, 1), size_hint=(1, 0.2))
         self.content_layout.add_widget(self.game_title)
         
         # Espacement entre le titre et les boutons
@@ -60,7 +60,7 @@ class MenuScreen(Screen):
         self.local_button = RoundedButton(text='Local', font_size = 60, size_hint=(1, 1))
         self.local_button.bind(on_press=self.go_to_local)
         
-        self.online_button = RoundedButton(text='En ligne', font_size = 60, size_hint=(1, 1))
+        self.online_button = RoundedButton(text='Online', font_size = 60, size_hint=(1, 1))
         self.online_button.bind(on_press=self.go_to_online)
 
         self.button_layout.add_widget(self.local_button)
@@ -79,10 +79,32 @@ class MenuScreen(Screen):
     def update_rect(self,instance, value):
         self.rect.pos = self.pos
         self.rect.size = self.size
+    
+    def update_rects(self,instance, value):
+        self.update_gradient()
+    
+    def update_gradient(self, *args):
+        self.root.canvas.before.clear()
+        with self.root.canvas.before:
+            # Définir les couleurs de départ et de fin du dégradé
+            color_start = Color(240/255, 219/255, 175/255, 1)  
+            color_end = Color(225/255, 156/255, 144/255,1)   
+
+            # Dessiner le dégradé
+            self.rects = []
+            for i in range(100):
+                color = Color(
+                    color_start.r + (color_end.r - color_start.r) * i / 100,
+                    color_start.g + (color_end.g - color_start.g) * i / 100,
+                    color_start.b + (color_end.b - color_start.b) * i / 100,
+                    1
+                )
+                rect = Rectangle(pos=(0, i * self.height / 100), size=(self.width, self.height / 100))
+                self.rects.append(rect)
 
     def go_to_online(self, instance):
-        self.manager.current = 'waiting'
+        self.manager.current = 'server'
 
     def go_to_local(self, instance):
-        self.manager.current = 'home'
+        self.manager.current = 'local_menu'
 

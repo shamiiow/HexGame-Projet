@@ -13,11 +13,11 @@ from kivy.uix.label import Label
 
 
 
-class HomeScreen(Screen):
+class LocalMenuScreen(Screen):
     def __init__(self, **kwargs):
-        super(HomeScreen, self).__init__(**kwargs)
+        super(LocalMenuScreen, self).__init__(**kwargs)
         Window.clearcolor = "#F0DBAF"
-        Window.fullscreen = 'auto'                    # FORCE FULLSCREEN
+        #Window.fullscreen = 'auto'                    # FORCE FULLSCREEN
 
         self.window = GridLayout()
         self.window.rows = 5

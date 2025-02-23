@@ -272,7 +272,7 @@ class GameScreen(Screen):
         self.recap == []
         self.player = False
         self.winner = 0
-        self.manager.current = 'home'
+        self.manager.current = 'local_menu'
 
 class Hexagon(Widget):
     def __init__(self, center_x, center_y, hex_size, row, col, grid_p, coll, **kwargs):
