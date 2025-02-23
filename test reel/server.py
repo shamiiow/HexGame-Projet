@@ -25,6 +25,7 @@ def nice_data(data):
     if data == 'Connected':
         return '-1'
 
+
     data = data.split(",")
     data2 = list(data)
     data = [int(i) for i in data[:-1]]
@@ -53,7 +54,7 @@ def threaded_client(conn, player):
 
             data = nice_data(data)
             
-            if data != '-1' and currentPlayer == 2:
+            if data != '-1' and currentPlayer == 2 and type(data) == list:
                 id = data[2]
                 print("----------Gestion de la partie----------")
                 #print(id, player_1, player_2, player_turn, data)
@@ -72,6 +73,7 @@ def threaded_client(conn, player):
                 display(grid_global)
                 print("----------Fin de la gestion de la partie----------")
                 reply = str(grid_global).replace("],", "],\n").replace("[[", " [").replace("]]", "]")
+                reply = '@'+reply
 
             if data == '-1':
                 if not(player_1) :
@@ -80,6 +82,10 @@ def threaded_client(conn, player):
                 elif not(player_2):
                     reply = '420'
                     player_2 = 420
+
+
+
+            
 
             print("Message envoye :\n" + str(reply))
             print("----------Fin du message envoye----------") 
@@ -91,7 +97,8 @@ def threaded_client(conn, player):
             for client in clients:
                 #print(client)
                 client.send(str.encode(reply))
-        except:
+        except Exception as e:
+            print('Error : ' + str(e))
             break
 
     print("Lost connection")
