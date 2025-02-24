@@ -33,6 +33,7 @@ class GameScreen(Screen):
         self.type_robot = self.list_robot[0]
         self.couleur = ["white","blue", "red"]
         self.text_color = (176/255,97/255,97/255)
+        self.fpsServer = 1/60
         print(Window.size[0])
 
         # Creation du Grid
@@ -98,28 +99,16 @@ class GameScreen(Screen):
         c = [poss_mouse[0]+1, poss_mouse[1]+1]
         
             
-        self.base = c
+        
 
 
 
         if self.winner != 0 or self.grid_p[c[0]][c[1]] != 0:
             self.update()
             return
+        self.base = c
         
         self.play(c)
-        
-        if self.p2_type or self.p1_type: 
-            clear_grid = [[self.grid_p[i][j] for j in range(1, len(self.grid_p[i])-1)] for i in range(1, len(self.grid_p)-1)]
-            best_play = ask_bot1(np.array(clear_grid), 1, True)
-            self.play([best_play[0]+1,best_play[1]+1])
-
-
-
-        if self.player: self.turn_label.text= "Au tour de : "+ str(self.player2_name)
-        else: self.turn_label.text= "Au tour de : "+ str(self.player1_name)
-
-        self.update()
-        
 
     def play(self, c):
         if self.winner != 0 or self.grid_p[c[0]][c[1]] != 0:
@@ -233,22 +222,28 @@ class GameScreen(Screen):
         print(self.winner)
 
     def update_game_state(self, dt):
-            print("------------------------Update-------------------------")
-            send_data = str(self.base[0])+','+str(self.base[1])+','+str(self.id)
-            print(send_data)
-            self.data_recieve = self.network.send(send_data)
-            self.data_recieve = self.format(self.data_recieve)
-            print("Data recu :")
-            for i in self.data_recieve:
-                print(i)
-            if type(self.data_recieve) == list:
-                for i in range(1, self.longeur-1):
-                    for j in range(1, self.longeur-1):
-                        self.grid_p[i][j] = self.data_recieve[i-1][j-1]
-            
-            self.update()
-            
-            print("------------------------Fin de l'update-------------------------")
+            try :
+                print("------------------------Update-------------------------")
+                send_data = str(self.base[0])+','+str(self.base[1])+','+str(self.id)
+                print(send_data)
+                self.data_recieve = self.network.send(send_data)
+                self.data_recieve = self.format(self.data_recieve)
+                print("Data recu :")
+                for i in self.data_recieve:
+                    print(i)
+                if type(self.data_recieve) == list:
+                    for i in range(1, self.longeur-1):
+                        for j in range(1, self.longeur-1):
+                            self.grid_p[i][j] = self.data_recieve[i-1][j-1]
+                
+                self.update()
+                self.win()
+                self.base = [-1,-1, self.id]
+                
+                print("------------------------Fin de l'update-------------------------")
+            except Exception as e:
+                print('Error : ' + str(e))
+                Clock.unschedule(self.gameUpdate)
     
     def format(self, texte):
         print(texte)
@@ -279,7 +274,7 @@ class GameScreen(Screen):
         print(self.id)
         
         self.base = [-1,-1, self.id]
-        Clock.schedule_interval(self.update_game_state, 1.0/60.0)
+        self.gameUpdate = Clock.schedule_interval(self.update_game_state, self.fpsServer)
         self.turn_on = True
         self.longUeur = max(2, longUeur)
         self.player1_name = player1_name

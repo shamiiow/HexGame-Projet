@@ -68,13 +68,15 @@ def threaded_client(conn, player):
                 #print(type(id), type(player_1), type(player_2), type(player_turn), data[:2])
                 #print(id == player_1 == player_turn)
                 if id == player_1 == player_turn:
-                    grid_global[data[0]-1][data[1]-1] = 1
-                    player_turn = player_2
-                    print(f"Le joueur {player_1} a joué en {data[0], data[1]} au tour du joueur {player_2}")
+                    if grid_global[data[0]-1][data[1]-1] == 0:
+                        grid_global[data[0]-1][data[1]-1] = 1
+                        player_turn = player_2
+                        print(f"Le joueur {player_1} a joué en {data[0], data[1]} au tour du joueur {player_2}")
                 if id == player_2 == player_turn:
-                    grid_global[data[0]-1][data[1]-1] = 2
-                    player_turn = player_1
-                    print(f"Le joueur {player_2} a joué en {data[0], data[1]} au tour du joueur {player_1}")
+                    if grid_global[data[0]-1][data[1]-1] == 0:
+                        grid_global[data[0]-1][data[1]-1] = 2
+                        player_turn = player_1
+                        print(f"Le joueur {player_2} a joué en {data[0], data[1]} au tour du joueur {player_1}")
                 print("\nGrid :")
                 display(grid_global)
                 print("----------Fin de la gestion de la partie----------")
