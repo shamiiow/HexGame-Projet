@@ -103,8 +103,10 @@ class MenuScreen(Screen):
                 self.rects.append(rect)
 
     def go_to_online(self, instance):
+        self.manager.transition.direction = 'left'
         self.manager.current = 'server'
 
     def go_to_local(self, instance):
+        self.manager.transition.direction = 'left'
         self.manager.current = 'local_menu'
 
