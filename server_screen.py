@@ -117,3 +117,6 @@ class ServerScreen(Screen):
     def go_to_waiting(self, instance):
         self.manager.current = 'waiting'
 
+    def go_to_waiting(self, instance):
+        self.manager.current = 'waiting'
+

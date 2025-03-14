@@ -68,7 +68,9 @@ class LocalMenuScreen(Screen):
 
         
         #self.exit_button = Button(text="X", background_color= (0/255, 45/255, 90/255), size_hint = (None,None), width = Window.size[0]/25, height =  Window.size[1]/25, pos_hint={'x': 0, 'y': 1-(self.height/Window.size[1])})
+
         self.exit_button = Button(text="Back", background_color= (0/255, 45/255, 90/255), pos_hint={'x': 0, 'y': 1 - (50/self.float_layout.size[0])}, size_hint = (None,None), size = (50,50))
+
         self.exit_button.bind(on_press=self.go_to_menu)
         
 
