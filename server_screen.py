@@ -1,5 +1,5 @@
 from kivy.app import App
-from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.screenmanager import Screen
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
@@ -30,7 +30,7 @@ class ServerScreen(Screen):
         super(ServerScreen, self).__init__(**kwargs)
         Window.clearcolor = (240 / 255, 219 / 255, 175 / 255, 1)
 
-        self.root = AnchorLayout()
+        self.root = AnchorLayout(anchor_x='left', anchor_y='top')
 
         with self.root.canvas.before:
             self.rects = []
@@ -81,6 +81,10 @@ class ServerScreen(Screen):
 
         self.root.add_widget(self.content_layout)
         self.add_widget(self.root)
+
+        self.close_button = Button(text='Back', font_size=25, size_hint = (0.15, 0.13), background_normal = '', background_color=(0 / 255, 45 / 255, 90 / 255, 1))
+        self.close_button.bind(on_press=self.go_to_menu)
+        self.root.add_widget(self.close_button)
     
     def update_line_rect(self, rect):
         def _update_rect(instance, value):
@@ -115,8 +119,10 @@ class ServerScreen(Screen):
                 self.rects.append(rect)
     
     def go_to_waiting(self, instance):
+        self.manager.transition.direction = 'left'
         self.manager.current = 'waiting'
 
-    def go_to_waiting(self, instance):
-        self.manager.current = 'waiting'
+    def go_to_menu(self, instance):
+        self.manager.transition.direction = 'right'
+        self.manager.current = 'menu'
 

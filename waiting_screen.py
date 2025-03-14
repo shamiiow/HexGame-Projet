@@ -36,24 +36,6 @@ class RoundedButton(Button):
         self.bg_rect.pos = [self.pos[0]-13, self.pos[1]-6]
         self.bg_rect.size = [self.size[0]+26, self.size[1]+12]
 
-class CloseButton(Button):
-    def __init__(self, **kwargs):
-        super(CloseButton, self).__init__(**kwargs)
-        self.background_normal = ''
-        self.background_down = ''
-        self.background_color = (100 / 255, 45 / 255, 90 / 255, 1)
-        with self.canvas.before:
-            Color(0 / 255, 45 / 255, 90 / 255, 1)
-            self.bg_rect = RoundedRectangle(size=self.size, pos=self.pos, radius=[30])
-        self.bind(pos=self.update_bg_rect, size=self.update_bg_rect)
-
-    def update_bg_rect(self, *args):
-        self.bg_rect.pos = [self.pos[0]-13, self.pos[1]-6]
-        self.bg_rect.size = [self.size[0]+26, self.size[1]+12]
-        print(self.bg_rect.pos, self.bg_rect.size)
-
-def close_app(instance):
-    App.get_running_app().stop()
 
 class WaitingScreen(Screen):
     def __init__(self, **kwargs):
@@ -95,9 +77,8 @@ class WaitingScreen(Screen):
         self.root.add_widget(self.content_layout)
         self.add_widget(self.root)
 
-        # Ajout du bouton "X" arrondi
-        self.close_button = CloseButton(text='Back', size_hint = (None, None), size = (70, 30), pos_hint = (None, None), pos=(10,60))
-        self.close_button.bind(on_press=close_app)
+        self.close_button = Button(text='Back', font_size=25, size_hint = (0.15, 0.13), background_normal = '', background_color=(0 / 255, 45 / 255, 90 / 255, 1))
+        self.close_button.bind(on_press=self.go_to_server)
         self.root.add_widget(self.close_button)
 
     def update_rect(self, *args):
@@ -126,3 +107,7 @@ class WaitingScreen(Screen):
     def decrement_grille(self, instance):
         self.grille = max(self.grille - 1, 2)
         self.grille_label.text = str(self.grille)
+    
+    def go_to_server(self, instance):
+        self.manager.transition.direction = 'right'
+        self.manager.current = 'server'
