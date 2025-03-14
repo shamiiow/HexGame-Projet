@@ -1,7 +1,7 @@
 from network import Network
 
 
-class Player():
+class Player:
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -22,7 +22,7 @@ def make_pos(tup):
 
 def main():
     run = True
-    
+
     startPos = (50, 50)
     p = Player(startPos[0], startPos[1])
     p2 = Player(0, 0)
@@ -41,6 +41,7 @@ def main():
             prev_pos = current_pos
             print(f"Player 1 position: {p.x, p.y}")
             print(f"Player 2 position: {p2.x, p2.y}")
+
 
 n = Network()
 main()

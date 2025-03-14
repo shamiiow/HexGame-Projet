@@ -15,6 +15,7 @@ except socket.error as e:
 s.listen(0)
 print("Waiting for a connection, Server Started")
 
+
 def display(grid):
     for i in range(7):
         print(grid[i])
@@ -22,9 +23,8 @@ def display(grid):
 
 
 def nice_data(data):
-    if data == 'Connected':
-        return '-1'
-
+    if data == "Connected":
+        return "-1"
 
     data = data.split(",")
     data2 = list(data)
@@ -33,84 +33,122 @@ def nice_data(data):
 
     return data
 
+
 def threaded_client(conn, player):
     global player_turn, player_1, player_2, currentPlayer
     conn.send(str.encode((str(player))))
     reply = ""
     while True:
         try:
-        
+
             data = conn.recv(2048).decode()
 
             if not data:
                 print("Disconnected")
                 break
-            
+
             print("-*-*-*-*-*-*-*-*-*-Message from user-*-*-*-*-*-*-*-*-*-")
-            print('Contenu :\n' + str(data))
-            print('----------Fin du message recu----------')
-            
+            print("Contenu :\n" + str(data))
+            print("----------Fin du message recu----------")
+
             id = None
 
             data = nice_data(data)
             print("----------Data----------")
             print(data[0])
             if data[0] == -1:
-                reply = str(grid_global).replace("],", "],\n").replace("[[", " [").replace("]]", "]")
-                reply = '@'+reply+'%'
+                reply = (
+                    str(grid_global)
+                    .replace("],", "],\n")
+                    .replace("[[", " [")
+                    .replace("]]", "]")
+                )
+                reply = "@" + reply + "%"
             print("----------Fin de la data----------")
 
-            if data != '-1' and currentPlayer == 2 and type(data) == list and data[0] != -1:
+            if (
+                data != "-1"
+                and currentPlayer == 2
+                and type(data) == list
+                and data[0] != -1
+            ):
                 id = data[2]
                 print("----------Gestion de la partie----------")
-                #print(id, player_1, player_2, player_turn, data)
-                print('id : ' + str(id)+ ' type : ' + str(type(id))+'\nplayer_1 : ' + str(player_1)+ ' type : ' + str(type(player_1))+'\nplayer_2 : ' + str(player_2)+ ' type : ' + str(type(player_2))+'\nplayer_turn : ' + str(player_turn)+ ' type : ' + str(type(player_turn))+'\ndata : ' + str(data)+ ' type : ' + str(type(data)))
-                #print(type(id), type(player_1), type(player_2), type(player_turn), data[:2])
-                #print(id == player_1 == player_turn)
+                # print(id, player_1, player_2, player_turn, data)
+                print(
+                    "id : "
+                    + str(id)
+                    + " type : "
+                    + str(type(id))
+                    + "\nplayer_1 : "
+                    + str(player_1)
+                    + " type : "
+                    + str(type(player_1))
+                    + "\nplayer_2 : "
+                    + str(player_2)
+                    + " type : "
+                    + str(type(player_2))
+                    + "\nplayer_turn : "
+                    + str(player_turn)
+                    + " type : "
+                    + str(type(player_turn))
+                    + "\ndata : "
+                    + str(data)
+                    + " type : "
+                    + str(type(data))
+                )
+                # print(type(id), type(player_1), type(player_2), type(player_turn), data[:2])
+                # print(id == player_1 == player_turn)
                 if id == player_1 == player_turn:
-                    if grid_global[data[0]-1][data[1]-1] == 0:
-                        grid_global[data[0]-1][data[1]-1] = 1
+                    if grid_global[data[0] - 1][data[1] - 1] == 0:
+                        grid_global[data[0] - 1][data[1] - 1] = 1
                         player_turn = player_2
-                        print(f"Le joueur {player_1} a joué en {data[0], data[1]} au tour du joueur {player_2}")
+                        print(
+                            f"Le joueur {player_1} a joué en {data[0], data[1]} au tour du joueur {player_2}"
+                        )
                 if id == player_2 == player_turn:
-                    if grid_global[data[0]-1][data[1]-1] == 0:
-                        grid_global[data[0]-1][data[1]-1] = 2
+                    if grid_global[data[0] - 1][data[1] - 1] == 0:
+                        grid_global[data[0] - 1][data[1] - 1] = 2
                         player_turn = player_1
-                        print(f"Le joueur {player_2} a joué en {data[0], data[1]} au tour du joueur {player_1}")
+                        print(
+                            f"Le joueur {player_2} a joué en {data[0], data[1]} au tour du joueur {player_1}"
+                        )
                 print("\nGrid :")
                 display(grid_global)
                 print("----------Fin de la gestion de la partie----------")
-                reply = str(grid_global).replace("],", "],\n").replace("[[", " [").replace("]]", "]")
-                reply = '@'+reply+'%'
+                reply = (
+                    str(grid_global)
+                    .replace("],", "],\n")
+                    .replace("[[", " [")
+                    .replace("]]", "]")
+                )
+                reply = "@" + reply + "%"
 
-            
-
-            if data == '-1':
+            if data == "-1":
                 print("----------Gestion de la connexion----------")
-                if not(player_1) :
-                    reply = '69'
+                if not (player_1):
+                    reply = "69"
                     player_1 = 69
-                elif not(player_2):
-                    reply = '420'
+                elif not (player_2):
+                    reply = "420"
                     player_2 = 420
                 print("----------Fin de la gestion de la connexion----------")
 
             print("Message envoye :\n" + str(reply))
-            print("----------Fin du message envoye----------") 
-            print("-*-*-*-*-*-*-*-*-*-Fin-*-*-*-*-*-*-*-*-*-")   
+            print("----------Fin du message envoye----------")
+            print("-*-*-*-*-*-*-*-*-*-Fin-*-*-*-*-*-*-*-*-*-")
 
-
-
-            #conn.sendall(str.encode(reply))
+            # conn.sendall(str.encode(reply))
             for client in clients:
-                #print(client)
+                # print(client)
                 client.send(str.encode(reply))
         except Exception as e:
-            print('Error : ' + str(e))
+            print("Error : " + str(e))
             break
 
     print("Lost connection")
     conn.close()
+
 
 currentPlayer = 0
 clients = []
@@ -119,13 +157,11 @@ player_1 = False
 player_2 = False
 
 
-
 while True:
     conn, addr = s.accept()
     clients.append(conn)
     print("Connected to:", addr)
     player_turn = 69
-        
 
     start_new_thread(threaded_client, (conn, currentPlayer))
     currentPlayer += 1
