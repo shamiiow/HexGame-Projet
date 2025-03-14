@@ -1,5 +1,5 @@
 from kivy.app import App
-from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.screenmanager import ScreenManager, FadeTransition
 
 from menu_screen import MenuScreen
 from local_menu_screen import LocalMenuScreen
@@ -11,7 +11,7 @@ from game_screen import GameScreen
 class MyApp(App):
     def build(self):
         self.title = 'Hex Game'
-        sm = ScreenManager()
+        sm = ScreenManager(transition=FadeTransition())
         
         sm.add_widget(MenuScreen(name='menu'))
         sm.add_widget(LocalMenuScreen(name='local_menu'))
