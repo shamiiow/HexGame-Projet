@@ -18,6 +18,9 @@ class Network:
             return self.client.recv(2048).decode()
         except Exception as e:
             print(f"Connection error: {e}")
+        
+    def disconnect(self):
+        self.client.close()
 
     def send(self, data):
         try:

@@ -10,6 +10,9 @@ from kivy.core.window import Window
 from kivy.graphics import Color, Rectangle, RoundedRectangle
 from kivy.uix.anchorlayout import AnchorLayout
 
+from kivy.clock import Clock
+from network import Network
+
 class RoundedButton(Button):
     def __init__(self, **kwargs):
         super(RoundedButton, self).__init__(**kwargs)
@@ -29,6 +32,11 @@ class ServerScreen(Screen):
     def __init__(self, **kwargs):
         super(ServerScreen, self).__init__(**kwargs)
         Window.clearcolor = (240 / 255, 219 / 255, 175 / 255, 1)
+        self.fpsServer = 8/4
+        self.stat = "Menudefault%"
+        self.message = self.stat
+        self.nomServ = ""
+        
 
         self.root = AnchorLayout(anchor_x='left', anchor_y='top')
 
@@ -46,26 +54,9 @@ class ServerScreen(Screen):
         self.server_layout = BoxLayout(orientation='vertical', size_hint_y=None)
         self.server_layout.bind(minimum_height=self.server_layout.setter('height'))
 
-        game_host = ['Host 1', 'Host 2', 'Host 3', 'Host 4', 'Host 5', 'Host 6', 'Host 7', 'Host 8', 'Host 9', 'Host 10', 'Host 11']
-
-        for host in game_host:
-            line_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=50, padding=[10, 0, 20, 0])
-            with line_layout.canvas.before:
-                Color(0.7, 0.7, 0.7, 1)  # Couleur de fond gris clair
-                rect = Rectangle(size=line_layout.size, pos=line_layout.pos)
-            line_layout.bind(size=self.update_line_rect(rect), pos=self.update_line_rect(rect))
-            
-            label = Label(text=host, size_hint=(None, 1), width=200)
-            join_button = RoundedButton(text='Join', size_hint=(None, None), width=100, height=40)  # Taille réduite du bouton "Join"
-            button_container = BoxLayout(orientation='vertical', size_hint=(None, 1), width=100)
-            button_container.add_widget(Widget())
-            button_container.add_widget(join_button)
-            button_container.add_widget(Widget())
-            
-            line_layout.add_widget(label)
-            line_layout.add_widget(Widget())  # Espacement
-            line_layout.add_widget(button_container)
-            self.server_layout.add_widget(line_layout)
+        self.game_host = []
+        self.varParceQuePythonEstNul = 0
+        
 
         scroll_view.add_widget(self.server_layout)
         self.content_layout.add_widget(scroll_view)
@@ -83,7 +74,7 @@ class ServerScreen(Screen):
         self.add_widget(self.root)
 
         self.close_button = Button(text='Back', font_size=25, size_hint = (0.15, 0.13), background_normal = '', background_color=(0 / 255, 45 / 255, 90 / 255, 1))
-        self.close_button.bind(on_press=self.go_to_menu)
+        self.close_button.bind(on_press=self.print_server)
         self.root.add_widget(self.close_button)
     
     def update_line_rect(self, rect):
@@ -96,10 +87,46 @@ class ServerScreen(Screen):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
 
+    def update_game_state(self, dt):
+        print('-----------------------------------------')
+        print(f"id: {self.id}")
+        print(f"Data send: {self.message}")
+        self.data = self.network.send(self.message).split("%")
+        print(f"Data received: {self.data}")
+        if self.data[0] == "Menudefault":
+            self.game_host = self.data[1].split("|")
+            self.game_host.pop()
+            self.game_host.reverse()
+            print(self.game_host)
+            self.server_layout.clear_widgets()
+            self.print_server()
+        
+        if self.data[0] == "Menujoin":
+            self.nomServ = self.data[1]
+            self.print_server()
+            self.go_to_waiting(self)
+            
+        
+        
+
+        self.message = self.stat
+
     def update_rects(self,instance, value):
+        if self.varParceQuePythonEstNul == 0: self.varParceQuePythonEstNul = 1
+
+        elif self.varParceQuePythonEstNul == 1:
+            self.varParceQuePythonEstNul = 2
+            print('setup_server')
+            self.network = Network()
+            self.id = self.network.send("AskAttribId")
+            self.gameUpdate = Clock.schedule_interval(self.update_game_state, self.fpsServer)
+            
+        elif self.varParceQuePythonEstNul == 2: self.varParceQuePythonEstNul = 3
+            
         self.update_gradient()
     
     def update_gradient(self, *args):
+        
         self.root.canvas.before.clear()
         with self.root.canvas.before:
             # Définir les couleurs de départ et de fin du dégradé
@@ -119,10 +146,40 @@ class ServerScreen(Screen):
                 self.rects.append(rect)
     
     def go_to_waiting(self, instance):
+        self.message = self.network.send("Menucreate%").split("%")[1]
+        self.manager.get_screen('waiting').set_variables(self.id, self.message)
+        self.network.disconnect()
+        Clock.unschedule(self.gameUpdate)
         self.manager.transition.direction = 'left'
         self.manager.current = 'waiting'
 
     def go_to_menu(self, instance):
+        
+        
         self.manager.transition.direction = 'right'
         self.manager.current = 'menu'
 
+    def go_to_x(self, instance, x):
+        self.message = "Menujoin%" + x
+
+    def print_server(self):
+        print(self.game_host)
+        for host in self.game_host:
+            line_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=50, padding=[10, 0, 20, 0])
+            with line_layout.canvas.before:
+                Color(0.7, 0.7, 0.7, 1)  # Couleur de fond gris clair
+                rect = Rectangle(size=line_layout.size, pos=line_layout.pos)
+            line_layout.bind(size=self.update_line_rect(rect), pos=self.update_line_rect(rect))
+            
+            label = Label(text=host, size_hint=(None, 1), width=200)
+            join_button = RoundedButton(text='Join', size_hint=(None, None), width=100, height=40)  # Taille réduite du bouton "Join"
+            join_button.bind(on_press= lambda instance, numServ = host: self.go_to_x(instance, numServ))
+            button_container = BoxLayout(orientation='vertical', size_hint=(None, 1), width=100)
+            button_container.add_widget(Widget())
+            button_container.add_widget(join_button)
+            button_container.add_widget(Widget())
+            
+            line_layout.add_widget(label)
+            line_layout.add_widget(Widget())  # Espacement
+            line_layout.add_widget(button_container)
+            self.server_layout.add_widget(line_layout)

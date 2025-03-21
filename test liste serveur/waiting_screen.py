@@ -9,6 +9,9 @@ from kivy.core.window import Window
 from kivy.graphics import Color, Rectangle, RoundedRectangle
 from kivy.uix.anchorlayout import AnchorLayout
 
+from kivy.clock import Clock
+from network import Network
+
 class ColoredLabel(Label):
     def __init__(self, color=None, **kwargs):
         super(ColoredLabel, self).__init__(**kwargs)
@@ -41,6 +44,7 @@ class WaitingScreen(Screen):
     def __init__(self, **kwargs):
         super(WaitingScreen, self).__init__(**kwargs)
         Window.clearcolor = (240 / 255, 219 / 255, 175 / 255, 1)
+        self.fpsServer = 8/4
 
         self.grille = 7
 
@@ -81,10 +85,44 @@ class WaitingScreen(Screen):
         self.close_button.bind(on_press=self.go_to_server)
         self.root.add_widget(self.close_button)
 
+    def update_game_state(self, dt):
+        print('-----------------------------------------')
+        print(f"Data send: {self.message}")
+        self.data = self.network.send(self.message).split("%")
+        print(f"Data received: {self.data}")
+        if self.data[0] == "Menudefault":
+            self.game_host = self.data[1].split("|")
+            self.game_host.pop()
+            self.game_host.reverse()
+            print(self.game_host)
+            self.server_layout.clear_widgets()
+            self.print_server()
+        
+        if self.data[0] == "Menujoin":
+            self.nomServ = self.data[1]
+            self.print_server()
+            self.go_to_waiting(self)
+    
+    def set_variables(self, id, idServer):
+        print('---------------------------------Lisaison Reussi---------------------------------')
+        self.id = id
+        self.idRoom = idServer
+        self.network = Network()
+        print(self.network.send(f"iKnowMyId%{self.id}"))
+        self.message = "Waitingdefault%"+str(self.idRoom)
+        self.gameUpdate = Clock.schedule_interval(self.update_game_state, self.fpsServer)
+    
+    def update_game_state(self, dt):
+        print('-----------------------------------------')
+        print(f"Data send: {self.message}")
+        self.data = self.network.send(self.message).split("%")
+        print(f"Data received: {self.data}")
+
     def update_rect(self, *args):
         self.update_gradient()
 
     def update_gradient(self, *args):
+        
         self.root.canvas.before.clear()
         with self.root.canvas.before:
             color_start = Color(240 / 255, 219 / 255, 175 / 255, 1)
