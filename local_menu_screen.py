@@ -46,6 +46,8 @@ class LocalMenuScreen(Screen):
         #Window.fullscreen = 'auto'                    # FORCE FULLSCREEN
 
         self.grille = 7
+        self.p1_checkbox_list = [False, "X", (255,0,0)]
+        self.p2_checkbox_list = [False, "X", (255,0,0)]
 
         self.root = AnchorLayout(anchor_x='left', anchor_y='top')
 
@@ -57,15 +59,15 @@ class LocalMenuScreen(Screen):
         
         self.window = GridLayout(padding=[30,30,30,20], spacing=10, rows = 6, cols = 1)
 
-        self.players_name = GridLayout(size_hint = (1,None), height = 30, spacing = 500, rows = 1, cols = 2)
-        self.players_bot = GridLayout(rows = 1, cols = 4)
+        self.players_name = GridLayout(size_hint = (1,None), height = 130, spacing = 500, rows = 1, cols = 2, padding = [30, 80, 30, 0])
+        self.players_bot = BoxLayout(orientation = 'horizontal', size_hint = (1,None), height = 30, spacing = 600, padding = [30, 80, 30, 0])
 
         self.player1_bot_box = BoxLayout(orientation = 'horizontal')
         self.player2_bot_box = BoxLayout(orientation = 'horizontal')
 
-        self.button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 1), padding=[150, 0, 150, 20], spacing=40)
+        self.button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.8), padding=[150, 0, 150, 20], spacing=40)
 
-        self.footer = GridLayout(rows = 1, cols = 1, padding = [200, 0, 200, 0])
+        self.footer = GridLayout(rows = 1, cols = 1, padding = [200, 0, 200, 0], size_hint=(1, 0.8))
 
         self.float_layout = FloatLayout(size_hint=(1, 1))
 
@@ -76,23 +78,26 @@ class LocalMenuScreen(Screen):
         self.title = Label(text='Local Mode', font_size=90, color=(0 / 255, 20 / 255, 40 / 255, 1))
         
 
-        self.player1_entry = TextInput(text='', hint_text="Name player 1", multiline = False, size_hint_x = None, width = 150, background_color = (220/255,134/255,134/255))
+        self.player1_entry = TextInput(text='', hint_text="Name player 1", multiline = False, size_hint_x = None, width = 180, background_color = (220/255,134/255,134/255))
         
-        self.player2_entry = TextInput(text='', hint_text="Name player 2", multiline = False, size_hint_x = None, width = 150, background_color = (126/255,215/255,193/255), halign='right')
+        self.player2_entry = TextInput(text='', hint_text="Name player 2", multiline = False, size_hint_x = None, width = 180, background_color = (126/255,215/255,193/255), halign='right')
         
-        self.player1_type_check = CheckBox(size_hint=(None, None), size=(40, 40), color = (0, 0, 1, 1))
-        self.player1_type_label = Label(text="bot ?", color = (0,0,0))
-        
-        self.player2_type_label = Label(text="bot ?", color = (0,0,0))
-        self.player2_type_check = CheckBox(size_hint=(None, None), size=(40, 40), color = (0, 0, 1, 1))
-        
+        self.player1_type_check = Button(text=str(self.p1_checkbox_list[1]), font_size=30, size_hint=(1, 1), background_normal = '', background_color= self.p1_checkbox_list[2])
+        self.player1_type_check.bind(on_press=self.p1_checkbox)
+        self.player1_type_label = Label(text="bot ?", color = (0,0,0), font_size=20)
+
+        self.player2_type_label = Label(text="bot ?", color = (0,0,0), font_size=20)
+        self.player2_type_check = Button(text=str(self.p2_checkbox_list[1]), font_size=30, size_hint=(1, 1), background_normal = '', background_color= self.p2_checkbox_list[2])
+        self.player2_type_check.bind(on_press=self.p2_checkbox)
+
+
         self.texte = Label(text="Pick the grid size :", font_size=40, color=(0 / 255, 20 / 255, 40 / 255, 1))
 
         self.decrement_button = RoundedButton(text='-', font_size=60, size_hint=(0.3, 1))
         self.decrement_button.bind(on_press=self.decrement_grille)
-        self.grille_label = ColoredLabel(text=str(self.grille), color=(0 / 255, 45 / 255, 90 / 255, 1), font_size=60, size_hint=(0.4, 1))
+        self.grille_label = ColoredLabel(text=str(self.grille), color=(0 / 255, 45 / 255, 90 / 255, 1), font_size=50, size_hint=(0.4, 1))
         self.increment_button = RoundedButton(text='+', font_size=60, size_hint=(0.3, 1))
-        self.increment_button.bind(on_release=self.increment_grille)
+        self.increment_button.bind(on_press=self.increment_grille)
 
         
         self.play_button = RoundedButton(text= "Play", font_size=40, background_color= (0/255, 45/255, 90/255))  
@@ -135,9 +140,11 @@ class LocalMenuScreen(Screen):
     def update_rect(self, *args):
         self.update_gradient()
         if self.width < 800:
-            self.players_name.spacing = self.players_name.size[0]-300
+            self.players_name.spacing = self.players_name.size[0]-420
+            self.players_bot.spacing = self.players_bot.size[0] - 260
         else:
-            self.players_name.spacing = max(440,self.players_name.size[0]-300)
+            self.players_name.spacing = max(320,self.players_name.size[0]-420)
+            self.players_bot.spacing = max(380,self.players_bot.size[0] - 260)
 
     def update_gradient(self, *args):
         self.root.canvas.before.clear()
@@ -164,11 +171,20 @@ class LocalMenuScreen(Screen):
         self.grille = max(self.grille - 1, 2)
         self.grille_label.text = str(self.grille)
         
-    def p1_checkbox(self):
-        return self.player1_type_check.active
+    def p1_checkbox(self, instance):
+        print("ah")
+        if self.p1_checkbox_list[0] == False:
+            self.p1_checkbox_list = [True, "√", (14/255,209/255,69/255)]
+        else:
+            self.p1_checkbox_list = [False, "X", (226/255,28/255,36/255)]
+        self.player1_type_check.text = self.p1_checkbox_list[1]
+        self.player1_type_check.background_color = self.p1_checkbox_list[2]
 
-    def p2_checkbox(self):
-        return self.player2_type_check.active
+    def p2_checkbox(self, instance):
+        if self.p2_checkbox_list[0] == False:
+            self.p2_checkbox_list = [True, "√", (14/255,209/255,69/255)]
+        else:
+            self.p2_checkbox_list = [False, "X", (226/255,28/255,36/255)]
 
     def go_to_game(self, instance):
         self.manager.get_screen('game').set_variables(self.player1_entry.text, self.player2_entry.text, self.p1_checkbox(), self.p2_checkbox(), self.grille)
