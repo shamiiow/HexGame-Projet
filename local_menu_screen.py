@@ -82,13 +82,7 @@ class LocalMenuScreen(Screen):
         
         self.player2_entry = TextInput(text='', hint_text="Name player 2", multiline = False, size_hint_x = None, width = 180, background_color = (126/255,215/255,193/255), halign='right')
         
-        self.player1_type_check = Button(text=str(self.p1_checkbox_list[1]), font_size=30, size_hint=(1, 1), background_normal = '', background_color= self.p1_checkbox_list[2])
-        self.player1_type_check.bind(on_press=self.p1_checkbox)
-        self.player1_type_label = Label(text="bot ?", color = (0,0,0), font_size=20)
-
-        self.player2_type_label = Label(text="bot ?", color = (0,0,0), font_size=20)
-        self.player2_type_check = Button(text=str(self.p2_checkbox_list[1]), font_size=30, size_hint=(1, 1), background_normal = '', background_color= self.p2_checkbox_list[2])
-        self.player2_type_check.bind(on_press=self.p2_checkbox)
+        
 
 
         self.texte = Label(text="Pick the grid size :", font_size=40, color=(0 / 255, 20 / 255, 40 / 255, 1))
@@ -105,6 +99,15 @@ class LocalMenuScreen(Screen):
 
         self.players_name.add_widget(self.player1_entry)
         self.players_name.add_widget(self.player2_entry)   
+
+        self.player1_type_check = Button(text=self.p1_checkbox_list[1], font_size=30, size_hint=(1, 1), background_normal = '', background_color= self.p1_checkbox_list[2])
+        print("Binding p1_checkbox to player1_type_check")
+        self.player1_type_check.bind(on_press=self.p1_checkbox)
+        self.player1_type_label = Label(text="bot ?", color = (0,0,0), font_size=20)
+
+        self.player2_type_label = Label(text="bot ?", color = (0,0,0), font_size=20)
+        self.player2_type_check = Button(text=self.p2_checkbox_list[1], font_size=30, size_hint=(1, 1), background_normal = '', background_color= self.p2_checkbox_list[2])
+        self.player2_type_check.bind(on_press=self.p2_checkbox)
 
         self.player1_bot_box.add_widget(self.player1_type_check)
         self.player1_bot_box.add_widget(self.player1_type_label)
