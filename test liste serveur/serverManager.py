@@ -38,7 +38,19 @@ def find_reply(data, conn):
         return reply_askAttribId(conn)
     if data[0] == "iKnowMyId":
         return reply_iKnowMyId(data)
+    if data[0] == "InGameDefault":
+        return reply_inGameDefault(data)
     return data
+
+def reply_inGameDefault(data):
+    if data[2] not in dico_grid:
+        print(f"Creating grid for {data[2]}")
+        dico_grid[data[2]] = [[0 for _ in range(7)] for _ in range(6)]
+    if data[3] == "-1;-1" :
+        return f"InGameDefault%{dico_grid[data[2]]}"
+         
+    return f"InGameDefault%{dico_grid[data[2]]}"
+            
 
 def reply_iKnowMyId(data):
     saveID[data[1]] = data[2]
@@ -104,6 +116,9 @@ def print_info(data, conn, reply):
     print("List of rooms :")
     for i in range(len(list_of_rooms)):
         print(f"Room {i}: {list_of_rooms[i]}")
+    print("List of grid :")
+    for key, value in dico_grid.items():
+        print(f"{key}: {value}")
     print("---------------Fin------------------")   
 
 def threaded_client(conn, player):
@@ -135,6 +150,7 @@ def threaded_client(conn, player):
     del saveID[conn]
     clients.remove(conn)
 
+dico_grid = {}
 list_of_rooms = []
 clients = []
 currentPlayer = 0

@@ -90,7 +90,10 @@ class WaitingScreen(Screen):
         print(f"Data send: {self.message}")
         self.data = self.network.send(self.message).split("%")
         print(f"Data received: {self.data}")
-        if self.data[0] == "Menudefault":
+        print(self.data[0])
+        
+
+        """if self.data[0] == "Menudefault":
             self.game_host = self.data[1].split("|")
             self.game_host.pop()
             self.game_host.reverse()
@@ -101,7 +104,7 @@ class WaitingScreen(Screen):
         if self.data[0] == "Menujoin":
             self.nomServ = self.data[1]
             self.print_server()
-            self.go_to_waiting(self)
+            self.go_to_waiting(self)"""
     
     def set_variables(self, id, idServer):
         print('---------------------------------Lisaison Reussi---------------------------------')
@@ -117,6 +120,13 @@ class WaitingScreen(Screen):
         print(f"Data send: {self.message}")
         self.data = self.network.send(self.message).split("%")
         print(f"Data received: {self.data}")
+        if self.data[0] == "GoToGame":
+            print("caca"*100)
+            self.manager.get_screen('game').set_variables("pseudo de Louis", "shamiiow", False, False, self.grille, self.id, self.idRoom)
+            self.manager.transition.direction = 'left'
+            self.manager.current = 'game'
+            self.gameUpdate.cancel()
+            self.network.disconnect()
 
     def update_rect(self, *args):
         self.update_gradient()

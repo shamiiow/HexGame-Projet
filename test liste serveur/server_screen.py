@@ -64,7 +64,7 @@ class ServerScreen(Screen):
         self.input_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1), spacing=100)
         self.text_input = TextInput(hint_text='Enter player name', size_hint=(0.7, 1))
         self.create_button = RoundedButton(text='Créer', size_hint=(0.3, 1))
-        self.create_button.bind(on_press=self.go_to_waiting)
+        self.create_button.bind(on_press=self.go_to_waiting_create)
         self.input_layout.add_widget(self.text_input)
         self.input_layout.add_widget(self.create_button)
 
@@ -104,7 +104,7 @@ class ServerScreen(Screen):
         if self.data[0] == "Menujoin":
             self.nomServ = self.data[1]
             self.print_server()
-            self.go_to_waiting(self)
+            self.go_to_waiting_join(self)
             
         
         
@@ -145,9 +145,16 @@ class ServerScreen(Screen):
                 rect = Rectangle(pos=(0, i * self.height / 100), size=(self.width, self.height / 100))
                 self.rects.append(rect)
     
-    def go_to_waiting(self, instance):
+    def go_to_waiting_create(self, instance):
         self.message = self.network.send("Menucreate%").split("%")[1]
         self.manager.get_screen('waiting').set_variables(self.id, self.message)
+        self.network.disconnect()
+        Clock.unschedule(self.gameUpdate)
+        self.manager.transition.direction = 'left'
+        self.manager.current = 'waiting'
+    
+    def go_to_waiting_join(self, instance):
+        self.manager.get_screen('waiting').set_variables(self.id, self.message.split("%")[1])
         self.network.disconnect()
         Clock.unschedule(self.gameUpdate)
         self.manager.transition.direction = 'left'

@@ -13,6 +13,8 @@ from botIA import ask_bot1
 import numpy as np
 import random
 import time
+from network import Network
+from kivy.clock import Clock
 
 class GameScreen(Screen):
     def __init__(self, **kwargs):
@@ -31,6 +33,8 @@ class GameScreen(Screen):
         self.couleur = ["white","blue", "red"]
         self.text_color = (176/255,97/255,97/255)
         print(Window.size[0])
+
+        self.fpsServer = 1/4
 
         # Creation du Grid
 
@@ -219,9 +223,18 @@ class GameScreen(Screen):
             print("  "*i+str(self.grid_p[i])+"   "*(self.longeur//2)+str(self.grid_w[i])+"   "*(self.longeur//2)+str(poss_hex[i-1]))
         print(self.winner)
 
-    def set_variables(self, player1_name, player2_name, p1_checkbox, p2_checkbox, longUeur):
-        global poss_hex
+    def update_game_state(self, dt):
+        print('-----------------------------------------')
+        print(f"Data send: {self.message}")
+        self.data = self.network.send(self.message).split("%")
+        print(f"Data received: {self.data}")
         
+
+
+    def set_variables(self, player1_name, player2_name, p1_checkbox, p2_checkbox, longUeur, id, idRoom):
+        global poss_hex
+        self.id = id
+        self.idRoom = idRoom
         self.turn_on = True
         self.longUeur = max(2, longUeur)
         self.player1_name = player1_name
@@ -234,6 +247,11 @@ class GameScreen(Screen):
         self.longeur = self.longUeur +2
         self.coll = self.longeur-2
         self.height_total = self.hex_size*self.coll + (self.hex_size+1)*(0.15)
+
+        self.network = Network()
+        print(self.network.send(f"iKnowMyId%{self.id}"))
+        self.message = "InGameDefault%"+str(self.idRoom)
+        self.gameUpdate = Clock.schedule_interval(self.update_game_state, self.fpsServer)
 
         self.hex_size = min((Window.size[0])/(2*(self.coll+self.coll//2)),((Window.size[1])/(2*self.coll)))
 
