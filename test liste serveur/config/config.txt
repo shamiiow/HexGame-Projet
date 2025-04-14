@@ -1,0 +1,3 @@
+game_screen = 1/4
+server_screen = 1/4
+waiting_screen = 1/4

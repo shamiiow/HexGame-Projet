@@ -9,6 +9,7 @@ from kivy.core.window import Window
 from kivy.graphics import Color, Rectangle, RoundedRectangle
 from kivy.uix.anchorlayout import AnchorLayout
 
+from func_global import *
 from kivy.clock import Clock
 from network import Network
 
@@ -44,7 +45,7 @@ class WaitingScreen(Screen):
     def __init__(self, **kwargs):
         super(WaitingScreen, self).__init__(**kwargs)
         Window.clearcolor = (240 / 255, 219 / 255, 175 / 255, 1)
-        self.fpsServer = 8/4
+        self.fpsServer = extraire_valeur_fraction("waiting_screen")
 
         self.grille = 7
 
@@ -121,7 +122,6 @@ class WaitingScreen(Screen):
         self.data = self.network.send(self.message).split("%")
         print(f"Data received: {self.data}")
         if self.data[0] == "GoToGame":
-            print("caca"*100)
             self.manager.get_screen('game').set_variables("pseudo de Louis", "shamiiow", False, False, self.grille, self.id, self.idRoom)
             self.manager.transition.direction = 'left'
             self.manager.current = 'game'

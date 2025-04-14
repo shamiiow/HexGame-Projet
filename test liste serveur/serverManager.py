@@ -28,7 +28,6 @@ def find_reply(data, conn):
     if data[0] == "Menudefault":
         return reply_Menudefault()
     if data[0] == "Menucreate":
-        print("caca"*100)
         return reply_create(data)
     if data[0] == "Menujoin":
         return reply_join(data)
@@ -45,12 +44,51 @@ def find_reply(data, conn):
 def reply_inGameDefault(data):
     if data[2] not in dico_grid:
         print(f"Creating grid for {data[2]}")
-        dico_grid[data[2]] = [[0 for _ in range(7)] for _ in range(6)]
-    if data[3] == "-1;-1" :
-        return f"InGameDefault%{dico_grid[data[2]]}"
-         
-    return f"InGameDefault%{dico_grid[data[2]]}"
-            
+        dico_grid[data[2]] = [[[0 for _ in range(7)] for _ in range(7)], data[3]]
+    if data[4] == "-2;-2" :
+        return f"InGameDefault%{dico_grid[data[2]][0]}"
+    else:
+        coord = data[4].split(";")
+        x, y = int(coord[0]), int(coord[1])
+        if dico_grid[data[2]][0][x][y] == 0:
+            if is_it_your_turn(data):
+                dico_grid[data[2]][0][x][y] = what_color_are_you(data)
+    print("-------------Grid-------------")
+    print(dico_grid[data[2]][1])
+    return f"InGameDefault%{dico_grid[data[2]][0]}"
+
+def is_it_your_turn(data):
+    for i in range(len(list_of_rooms)):
+        if list_of_rooms[i][0] == data[2]:
+            if dico_grid[data[2]][1] == data[3]:
+                dico_grid[data[2]][1] = the_other_player(data)
+                return True
+            else:
+                return False
+    return False
+
+def the_other_player(data):
+    for i in range(len(list_of_rooms)):
+        if list_of_rooms[i][0] == data[2]:
+            if list_of_rooms[i][1] == data[3]:
+                print(" I HAVE CHANGE COLOR :", list_of_rooms[i][2])
+                return list_of_rooms[i][2]
+            else:
+                print(" I HAVE CHANGE COLOR :", list_of_rooms[i][1])
+                return list_of_rooms[i][1]
+    return None
+
+def what_color_are_you(data): 
+    for i in range(len(list_of_rooms)):
+        print("-------------What color are you-------------")
+        print(f"List of rooms: {list_of_rooms[i]}")
+        print(f"Data: {data}")
+        if list_of_rooms[i][0] == data[2]:
+            if list_of_rooms[i][1] == data[3]:
+                return 1
+            else :
+                return 2  
+    return 2 
 
 def reply_iKnowMyId(data):
     saveID[data[1]] = data[2]
@@ -73,7 +111,6 @@ def reply_create(data):
     name_room = ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
     print(f"Room created: {name_room}")
     list_of_rooms.append([name_room, saveID[data[1]]])
-    print("caca"*100)
     return f"Menucreate%{name_room}"
 
 def reply_join(data):
@@ -84,7 +121,6 @@ def reply_join(data):
                 return f"Menujoin%{list_of_rooms[i][0]}"
             
 def reply_Waitingdefault(data):
-    print(f"Data: {data}")
     for i in range(len(list_of_rooms)):
         if list_of_rooms[i][0] == data[2]:
             if len(list_of_rooms[i]) == 2:
@@ -130,7 +166,7 @@ def threaded_client(conn, player):
                 break
             
             reply = str(find_reply(data, conn))
-            print_info(data, conn, reply)
+            #print_info(data, conn, reply)
 
             conn.sendall(str.encode(reply))
 

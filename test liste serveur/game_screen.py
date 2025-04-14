@@ -13,6 +13,9 @@ from botIA import ask_bot1
 import numpy as np
 import random
 import time
+
+from func_global import *
+import ast
 from network import Network
 from kivy.clock import Clock
 
@@ -33,8 +36,9 @@ class GameScreen(Screen):
         self.couleur = ["white","blue", "red"]
         self.text_color = (176/255,97/255,97/255)
         print(Window.size[0])
+        self.play_coord = [-1,-1]
 
-        self.fpsServer = 1/4
+        self.fpsServer = extraire_valeur_fraction("game_screen")
 
         # Creation du Grid
 
@@ -98,7 +102,7 @@ class GameScreen(Screen):
             self.update()
             return
 
-        self.play(c)
+        self.play_coord = c
         
         if self.p2_type or self.p1_type: 
             clear_grid = [[self.grid_p[i][j] for j in range(1, len(self.grid_p[i])-1)] for i in range(1, len(self.grid_p)-1)]
@@ -226,10 +230,21 @@ class GameScreen(Screen):
     def update_game_state(self, dt):
         print('-----------------------------------------')
         print(f"Data send: {self.message}")
-        self.data = self.network.send(self.message).split("%")
+        self.data = self.network.send(self.message+'%'+str(self.play_coord[0]-1)+";"+str(self.play_coord[1]-1)).split("%")
         print(f"Data received: {self.data}")
-        
+        self.data = self.decode_data(self.data[1])
+        for i in range(1, self.longeur - 1):
+            for j in range(1, self.longeur - 1):
+                self.grid_p[i][j] = self.data[i - 1][j - 1]
+        self.affiche()
+        self.update()
+        self.win()
+        self.play_coord = [-1, -1]
 
+        
+    def decode_data(self, data):
+        return ast.literal_eval(data)
+        
 
     def set_variables(self, player1_name, player2_name, p1_checkbox, p2_checkbox, longUeur, id, idRoom):
         global poss_hex
@@ -250,7 +265,7 @@ class GameScreen(Screen):
 
         self.network = Network()
         print(self.network.send(f"iKnowMyId%{self.id}"))
-        self.message = "InGameDefault%"+str(self.idRoom)
+        self.message = "InGameDefault%"+str(self.idRoom)+"%"+str(self.id)
         self.gameUpdate = Clock.schedule_interval(self.update_game_state, self.fpsServer)
 
         self.hex_size = min((Window.size[0])/(2*(self.coll+self.coll//2)),((Window.size[1])/(2*self.coll)))

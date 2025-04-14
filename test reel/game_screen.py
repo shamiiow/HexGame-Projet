@@ -335,6 +335,7 @@ class GameScreen(Screen):
 
             self.update()
             self.win()
+            self.affiche()
             self.base = [-1, -1, self.id]
 
             print("------------------------Fin de l'update-------------------------")

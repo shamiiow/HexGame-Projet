@@ -10,6 +10,7 @@ from kivy.core.window import Window
 from kivy.graphics import Color, Rectangle, RoundedRectangle
 from kivy.uix.anchorlayout import AnchorLayout
 
+from func_global import *
 from kivy.clock import Clock
 from network import Network
 
@@ -32,7 +33,7 @@ class ServerScreen(Screen):
     def __init__(self, **kwargs):
         super(ServerScreen, self).__init__(**kwargs)
         Window.clearcolor = (240 / 255, 219 / 255, 175 / 255, 1)
-        self.fpsServer = 8/4
+        self.fpsServer = extraire_valeur_fraction("server_screen")
         self.stat = "Menudefault%"
         self.message = self.stat
         self.nomServ = ""
