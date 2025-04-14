@@ -300,12 +300,7 @@ class GameScreen(Screen):
 
     def go_to_home(self, instance):
         self.game_hex.canvas.before.clear()
-
-        self.grid_p = [[0 for _ in range(self.longeur)] for _ in range(self.longeur)]
-        self.recap == []
-        self.player = False
-        self.winner = 0
-        self.manager.current = 'local_menu'
+        self.manager.current = 'menu'
 
 class Hexagon(Widget):
     def __init__(self, center_x, center_y, hex_size, row, col, grid_p, coll, **kwargs):

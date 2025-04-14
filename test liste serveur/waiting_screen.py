@@ -119,7 +119,7 @@ class WaitingScreen(Screen):
     def update_game_state(self, dt):
         print('-----------------------------------------')
         print(f"Data send: {self.message}")
-        self.data = self.network.send(self.message).split("%")
+        self.data = self.network.send(self.message+f"%{self.grille}").split("%")
         print(f"Data received: {self.data}")
         if self.data[0] == "GoToGame":
             self.manager.get_screen('game').set_variables("pseudo de Louis", "shamiiow", False, False, self.grille, self.id, self.idRoom)
