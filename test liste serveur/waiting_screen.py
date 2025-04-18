@@ -157,5 +157,6 @@ class WaitingScreen(Screen):
         self.grille_label.text = str(self.grille)
     
     def go_to_server(self, instance):
+        self.network.send("Disconnect%"+str(self.id))
         self.manager.transition.direction = 'right'
         self.manager.current = 'server'

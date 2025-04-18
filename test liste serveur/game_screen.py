@@ -299,6 +299,7 @@ class GameScreen(Screen):
         self.update()
 
     def go_to_home(self, instance):
+        self.network.send("Disconnect%"+str(self.id))
         self.game_hex.canvas.before.clear()
         self.manager.current = 'menu'
 

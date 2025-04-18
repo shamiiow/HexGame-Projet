@@ -25,6 +25,8 @@ def generate_id():
 def find_reply(data, conn):
     data = data.split("%")
     data.insert(1, conn)
+    if data[0] == "Disconnect":
+        return reply_disconnect(data)
     if data[0] == "Menudefault":
         return reply_Menudefault()
     if data[0] == "Menucreate":
@@ -40,6 +42,15 @@ def find_reply(data, conn):
     if data[0] == "InGameDefault":
         return reply_inGameDefault(data)
     return data
+
+def reply_disconnect(conn):
+    print(conn)
+    #delete the id from saveID
+    for key in saveID.keys():
+        if saveID[key] == conn[2]:
+            del saveID[key]
+            print(f"ID {conn[2]} deleted from saveID")
+    
 
 def reply_inGameDefault(data):
     if data[2] not in dico_grid:
