@@ -1,4 +1,5 @@
 Lib/*
 __pycache__/*
+test_liste_serveur/__pycache__/*
 Scripts/*
 share/*
