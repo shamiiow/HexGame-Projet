@@ -75,7 +75,6 @@ class GameScreen(Screen):
         
         #self.footer.add_widget(self.player1_last_play_label)
         #self.footer.add_widget(self.player2_last_play_label)
-        self.footer.add_widget(self.cancel_button)
         self.footer.add_widget(self.home_button)
 
         # Ajout des SousGrid au GridGlobal
@@ -299,6 +298,7 @@ class GameScreen(Screen):
         self.update()
 
     def go_to_home(self, instance):
+        Clock.unschedule(self.gameUpdate)
         self.network.send("Disconnect%"+str(self.id))
         self.game_hex.canvas.before.clear()
         self.manager.current = 'menu'

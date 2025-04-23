@@ -44,12 +44,22 @@ def find_reply(data, conn):
     return data
 
 def reply_disconnect(conn):
-    print(conn)
+    print(f"Player {saveID[conn]} disconnected"*50)
+    
+    #delete the room and gril relate to the player
+    for room in list_of_rooms:
+        if saveID[conn] in room:
+            room.remove(saveID[conn])
+            if len(room) == 0:
+                list_of_rooms.remove(room)
+                print(f"!Room {room[0][0]} is empty and has been removed")
+                
     #delete the id from saveID
     for key in saveID.keys():
         if saveID[key] == conn[2]:
             del saveID[key]
             print(f"ID {conn[2]} deleted from saveID")
+    
     
 
 def reply_inGameDefault(data):

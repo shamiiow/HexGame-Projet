@@ -75,7 +75,7 @@ class ServerScreen(Screen):
         self.add_widget(self.root)
 
         self.close_button = Button(text='Back', font_size=25, size_hint = (0.15, 0.13), background_normal = '', background_color=(0 / 255, 45 / 255, 90 / 255, 1))
-        self.close_button.bind(on_press=self.print_server)
+        self.close_button.bind(on_press=self.go_to_menu)
         self.root.add_widget(self.close_button)
     
     def update_line_rect(self, rect):
@@ -112,15 +112,18 @@ class ServerScreen(Screen):
 
         self.message = self.stat
 
+    def setup_network(self):
+        print('setup_server')
+        self.network = Network()
+        self.id = self.network.send("AskAttribId")
+        self.gameUpdate = Clock.schedule_interval(self.update_game_state, self.fpsServer)
+
     def update_rects(self,instance, value):
         if self.varParceQuePythonEstNul == 0: self.varParceQuePythonEstNul = 1
 
         elif self.varParceQuePythonEstNul == 1:
             self.varParceQuePythonEstNul = 2
-            print('setup_server')
-            self.network = Network()
-            self.id = self.network.send("AskAttribId")
-            self.gameUpdate = Clock.schedule_interval(self.update_game_state, self.fpsServer)
+            
             
         elif self.varParceQuePythonEstNul == 2: self.varParceQuePythonEstNul = 3
             
@@ -163,7 +166,7 @@ class ServerScreen(Screen):
 
     def go_to_menu(self, instance):
         
-        
+        Clock.unschedule(self.gameUpdate)
         self.manager.transition.direction = 'right'
         self.manager.current = 'menu'
 
