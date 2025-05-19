@@ -434,6 +434,7 @@ class GameScreenOnline(Screen):
 
     def go_to_home(self, instance):
         Clock.unschedule(self.gameUpdate)
+        self.winner = 0
         self.network.send("Disconnect%" + str(self.id))
         self.game_hex.canvas.before.clear()
         self.manager.current = "menu"
