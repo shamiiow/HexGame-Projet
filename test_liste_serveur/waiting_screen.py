@@ -1,17 +1,19 @@
 import os
+
 from kivy.app import App
-from kivy.uix.screenmanager import Screen
-from kivy.uix.button import Button
-from kivy.uix.label import Label
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.widget import Widget
+from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.graphics import Color, Rectangle, RoundedRectangle
 from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.uix.screenmanager import Screen
+from kivy.uix.widget import Widget
 
 from func_global import *
-from kivy.clock import Clock
 from network import Network
+
 
 class ColoredLabel(Label):
     def __init__(self, color=None, **kwargs):
@@ -122,9 +124,9 @@ class WaitingScreen(Screen):
         self.data = self.network.send(self.message+f"%{self.grille}").split("%")
         print(f"Data received: {self.data}")
         if self.data[0] == "GoToGame":
-            self.manager.get_screen('game').set_variables("pseudo de Louis", "shamiiow", False, False, self.grille, self.id, self.idRoom)
+            self.manager.get_screen('game_online').set_variables("pseudo de Louis", "shamiiow", False, False, self.grille, self.id, self.idRoom)
             self.manager.transition.direction = 'left'
-            self.manager.current = 'game'
+            self.manager.current = 'game_online'
             self.gameUpdate.cancel()
             self.network.disconnect()
 

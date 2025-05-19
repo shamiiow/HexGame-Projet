@@ -1,5 +1,6 @@
 from network import Network
 
+
 def create_room():
     return "Menucreate%"
 

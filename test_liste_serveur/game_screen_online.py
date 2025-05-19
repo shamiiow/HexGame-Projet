@@ -1,25 +1,26 @@
-from kivy.app import App
-from kivy.uix.screenmanager import Screen
-from kivy.graphics import Color, Line, Rectangle, Triangle
-from kivy.uix.gridlayout import GridLayout
-from kivy.graphics import Color, Rectangle
-from kivy.uix.boxlayout import BoxLayout
-from math import cos, sin, pi, sqrt
-from kivy.core.window import Window
-from kivy.uix.button import Button
-from kivy.uix.widget import Widget
-from kivy.uix.label import Label
-from botIA import ask_bot1
-import numpy as np
+import ast
 import random
 import time
+from math import cos, pi, sin, sqrt
 
-from func_global import *
-import ast
-from network import Network
+import numpy as np
+from kivy.app import App
 from kivy.clock import Clock
+from kivy.core.window import Window
+from kivy.graphics import Color, Line, Rectangle, Triangle
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.uix.screenmanager import Screen
+from kivy.uix.widget import Widget
 
-class GameScreen(Screen):
+from botIA import ask_bot1
+from func_global import *
+from network import Network
+
+
+class GameScreenOnline(Screen):
     def __init__(self, **kwargs):
         self.recap = []
         self.winner = 0
@@ -42,7 +43,7 @@ class GameScreen(Screen):
 
         # Creation du Grid
 
-        super(GameScreen, self).__init__(**kwargs)
+        super(GameScreenOnline, self).__init__(**kwargs)
         self.GridGlobal = BoxLayout(orientation='vertical')
 
         # Creation des SousGrid
@@ -95,7 +96,7 @@ class GameScreen(Screen):
         poss_mouse = self.is_in_who(touch.pos)
         if (self.cancel_button.collide_point(*touch.pos)) or (self.home_button.collide_point(*touch.pos)) or (poss_mouse == None):
             self.update()
-            return super(GameScreen, self).on_touch_down(touch)
+            return super(GameScreenOnline, self).on_touch_down(touch)
         c = [poss_mouse[0]+1, poss_mouse[1]+1]
         if self.winner != 0 or self.grid_p[c[0]][c[1]] != 0:
             self.update()

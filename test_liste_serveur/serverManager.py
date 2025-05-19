@@ -1,8 +1,8 @@
-import socket
-from _thread import *
-import sys
 import random
+import socket
 import string
+import sys
+from _thread import *
 
 server = ""
 port = 5555
