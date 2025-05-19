@@ -75,7 +75,7 @@ class ServerScreen(Screen):
         self.text_input = TextInput(hint_text="Enter player name", size_hint=(0.7, 1))
         self.create_button = RoundedButton(text="Créer", size_hint=(0.3, 1))
         self.create_button.bind(on_press=self.go_to_waiting_create)
-        self.input_layout.add_widget(self.text_input)
+        #self.input_layout.add_widget(self.text_input)
         self.input_layout.add_widget(self.create_button)
 
         self.content_layout.add_widget(self.input_layout)

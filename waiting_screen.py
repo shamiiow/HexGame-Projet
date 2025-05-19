@@ -166,8 +166,8 @@ class WaitingScreen(Screen):
         print(f"Data received: {self.data}")
         if self.data[0] == "GoToGame":
             self.manager.get_screen("game_online").set_variables(
-                "pseudo de Louis",
-                "shamiiow",
+                str(self.data[2]),
+                str(self.data[3]),
                 False,
                 False,
                 self.grille,

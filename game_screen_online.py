@@ -168,11 +168,7 @@ class GameScreenOnline(Screen):
             best_play = ask_bot1(np.array(clear_grid), 1, True)
             self.play([best_play[0] + 1, best_play[1] + 1])
 
-        if self.player:
-            self.turn_label.text = "Au tour de : " + str(self.player2_name)
-        else:
-            self.turn_label.text = "Au tour de : " + str(self.player1_name)
-
+        
         self.update()
 
     def play(self, c):
@@ -250,9 +246,15 @@ class GameScreenOnline(Screen):
         self.recap.pop()
         self.player = self.player ^ True
         if self.player:
-            self.turn_label.text = "Au tour de : " + str(self.player2_name)
+            if self.player2_name == "You":
+                self.turn_label.text = f"{str(self.player2_name)}r turn"
+            else:
+                self.turn_label.text = "Au tour de : " + str(self.player2_name)
         else:
-            self.turn_label.text = "Au tour de : " + str(self.player1_name)
+            if self.player1_name == "You":
+                self.turn_label.text = f"{str(self.player1_name)}r turn"
+            else:
+                self.turn_label.text = "Au tour de : " + str(self.player1_name)
         self.update()
 
     def update(self):
@@ -342,10 +344,16 @@ class GameScreenOnline(Screen):
             + str(self.play_coord[1] - 1)
         ).split("%")
         print(f"Data received: {self.data}")
+        if self.data[2] == self.id:
+            self.turn_label.text = f"Your turn"
+        else:
+            self.turn_label.text = f"{str(self.data[2])}'s turn"
+
         self.data = self.decode_data(self.data[1])
         for i in range(1, self.longeur - 1):
             for j in range(1, self.longeur - 1):
                 self.grid_p[i][j] = self.data[i - 1][j - 1]
+        
         self.affiche()
         self.update()
         self.win()
@@ -364,9 +372,14 @@ class GameScreenOnline(Screen):
         self.longUeur = max(2, longUeur)
         self.player1_name = player1_name
         self.player2_name = player2_name
-        self.widgets[0].text = player1_name
-        self.widgets[2].text = player2_name
-        self.turn_label.text = self.player1_name + " commence !"
+        if self.player1_name == self.id:
+            self.player1_name = "You"
+        if self.player2_name == self.id:
+            self.player2_name = "You"
+        
+        self.widgets[0].text = self.player1_name
+        self.widgets[2].text = self.player2_name
+        self.turn_label.text = self.player1_name + " start !"
         self.p1_type = p1_checkbox
         self.p2_type = p2_checkbox
         self.longeur = self.longUeur + 2

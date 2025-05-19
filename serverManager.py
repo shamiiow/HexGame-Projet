@@ -21,7 +21,7 @@ print("Waiting for a connection, Server Started")
 
 
 def generate_id():
-    return "".join(random.choices(string.ascii_uppercase + string.digits, k=20))
+    return "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
 
 def find_reply(data, conn):
@@ -68,14 +68,14 @@ def reply_inGameDefault(data):
     if data[2] not in dico_grid:
         dico_grid[data[2]] = [[[0 for _ in range(7)] for _ in range(7)], data[3]]
     if data[4] == "-2;-2":
-        return f"InGameDefault%{dico_grid[data[2]][0]}"
+        return f"InGameDefault%{dico_grid[data[2]][0]}%{dico_grid[data[2]][1]}"
     else:
         coord = data[4].split(";")
         x, y = int(coord[0]), int(coord[1])
         if dico_grid[data[2]][0][x][y] == 0:
             if is_it_your_turn(data):
                 dico_grid[data[2]][0][x][y] = what_color_are_you(data)
-    return f"InGameDefault%{dico_grid[data[2]][0]}"
+    return f"InGameDefault%{dico_grid[data[2]][0]}%{dico_grid[data[2]][1]}"
 
 
 def is_it_your_turn(data):
@@ -132,7 +132,7 @@ def reply_Menudefault():
 
 
 def reply_create(data):
-    name_room = "".join(random.choices(string.ascii_lowercase + string.digits, k=20))
+    name_room = "".join(random.choices(string.ascii_lowercase + string.digits, k=25))
     list_of_rooms.append([[name_room, 7], saveID[data[1]]])
     return f"Menucreate%{name_room}"
 
@@ -151,7 +151,7 @@ def reply_Waitingdefault(data):
             if len(list_of_rooms[i]) == 2:
                 return f"Waitingdefault%{list_of_rooms[i]}"
             if len(list_of_rooms[i]) == 3:
-                return f"GoToGame%{data[2]}"
+                return f"GoToGame%{data[2]}%{list_of_rooms[i][1]}%{list_of_rooms[i][2]}"
 
 
 def remove_player_from_rooms(conn):
